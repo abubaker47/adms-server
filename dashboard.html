@@ -6,175 +6,555 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZKTeco ADMS Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        },
+                        accent: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .glass-effect {
+            backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .status-online {
+            background-color: #10b981;
+        }
+
+        .status-offline {
+            background-color: #ef4444;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Enhanced Panel Separation */
+        .panel-separator {
+            background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.3), transparent);
+            height: 1px;
+            margin: 2rem 0;
+        }
+
+        .section-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-1px);
+        }
+
+
+
+        .tab-navigation {
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .tab-button {
+            transition: all 0.3s ease;
+            position: relative;
+            border-radius: 0;
+        }
+
+        .tab-button:not(.active):hover {
+            background: rgba(59, 130, 246, 0.05);
+            color: #1e40af;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+            color: #1e40af;
+            font-weight: 600;
+        }
+
+        .tab-button::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            border-radius: 2px 2px 0 0;
+            transition: width 0.3s ease;
+        }
+
+        .tab-button.active::after {
+            width: 100%;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.8), rgba(241, 245, 249, 0.6));
+            border-bottom: 2px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .table-row {
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+        }
+
+        .table-row:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.02), rgba(59, 130, 246, 0.01));
+            border-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .content-header {
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.7));
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+        }
+
+        .info-banner {
+            background: rgba(59, 130, 246, 0.04);
+            border-left: 3px solid #3b82f6;
+            border-radius: 6px;
+        }
+    </style>
 </head>
 
-<body class="bg-gray-100">
-    <div class="container mx-auto px-4 py-8">
-        <header class="mb-8">
-            <div class="flex justify-between items-center">
+<body class="bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50 min-h-screen font-sans relative">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-30">
+        <div class="absolute inset-0"
+            style="background-image: radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.15) 1px, transparent 0); background-size: 20px 20px;">
+        </div>
+    </div>
+    <div class="relative z-10">
+        <!-- Navigation Header -->
+        <nav class="section-card sticky top-0 z-50 border-b-2 border-slate-200/50 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-4">
+                        <div
+                            class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg">
+                            <i class="fas fa-fingerprint text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-slate-800">ZKTeco ADMS</h1>
+                            <p class="text-sm text-slate-500 font-medium">Device Management System</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <div
+                            class="flex items-center space-x-2 bg-green-50 border border-green-200 rounded-xl px-4 py-2 shadow-sm">
+                            <div class="status-dot status-online animate-pulse-slow"></div>
+                            <span class="text-sm font-semibold text-green-700">Server Online</span>
+                        </div>
+
+                        <div class="relative">
+                            <button id="settingsDropdown"
+                                class="p-3 rounded-xl hover:bg-slate-100 transition-colors shadow-sm border border-slate-200">
+                                <i class="fas fa-cog text-slate-600"></i>
+                            </button>
+                            <div id="settingsMenu"
+                                class="hidden absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-slate-200 py-3 z-50">
+                                <div class="px-4 py-2 border-b border-slate-100">
+                                    <p class="text-sm font-semibold text-slate-700">System Actions</p>
+                                </div>
+                                <button id="clearQueuedCommands"
+                                    class="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50 flex items-center transition-colors">
+                                    <i class="fas fa-trash-alt mr-3 w-4"></i>Clear Queued Commands
+                                </button>
+                                <button id="clearAttendanceLogs"
+                                    class="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50 flex items-center transition-colors">
+                                    <i class="fas fa-database mr-3 w-4"></i>Clear Attendance Logs
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in space-y-8">
+            <!-- Main Content Tabbed Interface -->
+            <section class="space-y-6">
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-800">ZKTeco ADMS Dashboard</h1>
-                    <p class="text-gray-600">Manage your biometric devices</p>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Device Management Dashboard</h2>
+                    <p class="text-slate-600">Monitor and control your biometric devices with real-time statistics</p>
                 </div>
-                <div class="flex space-x-2">
-                    <button id="clearQueuedCommands"
-                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm">
-                        <i class="fas fa-trash-alt"></i> Clear Queued Commands
-                    </button>
-                    <button id="clearAttendanceLogs"
-                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm">
-                        <i class="fas fa-trash-alt"></i> Clear Attendance Logs
-                    </button>
+
+                <!-- Tab Navigation -->
+                <div class="tab-navigation rounded-3xl overflow-hidden shadow-lg">
+                    <div class="flex">
+                        <button id="devicesTab"
+                            class="tab-button active flex-1 px-8 py-6 text-left font-medium transition-all duration-300">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div
+                                        class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-md">
+                                        <i class="fas fa-desktop text-white"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-slate-700">Connected Devices</div>
+                                        <div class="text-sm text-slate-500">Manage biometric devices</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <span id="deviceCount"
+                                        class="inline-flex items-center justify-center w-10 h-10 bg-blue-100 text-blue-800 text-lg font-bold rounded-full">0</span>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button id="commandsTab"
+                            class="tab-button flex-1 px-8 py-6 text-left font-medium transition-all duration-300 border-l border-slate-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div
+                                        class="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-md">
+                                        <i class="fas fa-terminal text-white"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-slate-700">Command History</div>
+                                        <div class="text-sm text-slate-500">Track command execution</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <span id="commandCount"
+                                        class="inline-flex items-center justify-center w-10 h-10 bg-amber-100 text-amber-800 text-lg font-bold rounded-full">0</span>
+                                </div>
+                            </div>
+                        </button>
+
+                        <button id="attendanceTab"
+                            class="tab-button flex-1 px-8 py-6 text-left font-medium transition-all duration-300 border-l border-slate-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div
+                                        class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center shadow-md">
+                                        <i class="fas fa-chart-line text-white"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-slate-700">Attendance Logs</div>
+                                        <div class="text-sm text-slate-500">Real-time records</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <span id="logCount"
+                                        class="inline-flex items-center justify-center w-10 h-10 bg-emerald-100 text-emerald-800 text-lg font-bold rounded-full">0</span>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </header>
 
-        <!-- Devices Section -->
-        <section class="mb-8">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-semibold text-gray-700">Connected Devices</h2>
-                <button id="refreshDevices"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-sync-alt"></i> Refresh
-                </button>
-            </div>
+                <!-- Tab Content Container -->
+                <div class="section-card rounded-3xl overflow-hidden shadow-lg">
+                    <!-- Devices Tab Content -->
+                    <div id="devicesContent" class="tab-content active">
+                        <div class="content-header px-8 py-6 border-b border-slate-200/60">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                                <div>
+                                    <h3 class="text-xl font-bold text-slate-800">Connected Devices</h3>
+                                    <p class="text-sm text-slate-600 mt-1">Manage and monitor your biometric devices</p>
+                                </div>
+                                <button id="refreshDevices"
+                                    class="mt-4 sm:mt-0 inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                    <i class="fas fa-sync-alt mr-3"></i>
+                                    Refresh Devices
+                                </button>
+                            </div>
+                        </div>
 
-            <div class="bg-white rounded-lg shadow overflow-hidden">
-                <table class="min-w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Serial Number</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                IP Address</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Model</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Last Seen</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="devicesTableBody" class="bg-white divide-y divide-gray-200">
-                        <!-- Devices will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Device Info</th>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Network</th>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Model</th>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Last Activity</th>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Status</th>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="devicesTableBody">
+                                    <!-- Devices will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-        <!-- Commands Section -->
-        <section class="mb-8">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-semibold text-gray-700">Recent Commands</h2>
-                <button id="refreshCommands"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-sync-alt"></i> Refresh
-                </button>
-            </div>
-            <div class="bg-blue-50 border-l-4 border-blue-400 p-2 mb-4">
-                <p class="text-sm text-blue-700">
-                    <i class="fas fa-info-circle"></i> Commands are sent immediately to online devices. Status will
-                    update from "queued" to "sent" for notified devices, and to "completed" or "failed" after execution.
-                </p>
-            </div>
+                    <!-- Commands Tab Content -->
+                    <div id="commandsContent" class="tab-content">
+                        <div class="content-header px-8 py-6 border-b border-slate-200/60">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                                <div>
+                                    <h3 class="text-xl font-bold text-slate-800">Command History</h3>
+                                    <p class="text-sm text-slate-600 mt-1">Track device commands and their execution
+                                        status</p>
+                                </div>
+                                <button id="refreshCommands"
+                                    class="mt-4 sm:mt-0 inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                    <i class="fas fa-sync-alt mr-3"></i>
+                                    Refresh Commands
+                                </button>
+                            </div>
+                        </div>
 
-            <div class="bg-white rounded-lg shadow overflow-hidden">
-                <table class="min-w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Device SN</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Command</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Created At</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Response</th>
-                        </tr>
-                    </thead>
-                    <tbody id="commandsTableBody" class="bg-white divide-y divide-gray-200">
-                        <!-- Commands will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
+                        <div class="info-banner mx-8 mt-4 p-4">
+                            <p class="text-sm text-slate-700">
+                                <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                                Commands are sent to online devices immediately. Status: queued → sent →
+                                completed/failed
+                            </p>
+                        </div>
 
-        <!-- Attendance Logs Section -->
-        <section>
-            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Recent Attendance Logs</h2>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Device</th>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Command</th>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Status</th>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Created</th>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Response</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="commandsTableBody">
+                                    <!-- Commands will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-            <div class="bg-white rounded-lg shadow overflow-hidden">
-                <table class="min-w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Device SN</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                User ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Timestamp</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Verify Mode</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="attendanceTableBody" class="bg-white divide-y divide-gray-200">
-                        <!-- Attendance logs will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
+                    <!-- Attendance Tab Content -->
+                    <div id="attendanceContent" class="tab-content">
+                        <div class="content-header px-8 py-6 border-b border-slate-200/60">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                                <div>
+                                    <h3 class="text-xl font-bold text-slate-800">Attendance Logs</h3>
+                                    <p class="text-sm text-slate-600 mt-1">Real-time attendance records from all devices
+                                    </p>
+                                </div>
+                                <button id="refreshAttendance"
+                                    class="mt-4 sm:mt-0 inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-semibold rounded-2xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                    <i class="fas fa-sync-alt mr-3"></i>
+                                    Refresh Logs
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="info-banner mx-8 mt-4 p-4">
+                            <p class="text-sm text-slate-700">
+                                <i class="fas fa-chart-line text-blue-500 mr-2"></i>
+                                Real-time attendance records collected automatically from connected devices
+                            </p>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Device</th>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Employee</th>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Timestamp</th>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Verification</th>
+                                        <th
+                                            class="px-8 py-5 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                            Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendanceTableBody">
+                                    <!-- Attendance logs will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+        </div>
     </div>
 
     <!-- Modal for sending commands -->
-    <div id="commandModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full">
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <div class="mt-3">
-                <div class="flex items-start justify-between">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">Send Command</h3>
-                    <button id="closeModal" class="text-gray-400 hover:text-gray-500">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="mt-2 px-7 py-3">
-                    <p class="text-sm text-gray-500 mb-4">Select a command to send to device: <span id="modalDeviceSN"
-                            class="font-semibold"></span></p>
-                    <div class="bg-blue-50 border-l-4 border-blue-400 p-2 mb-4">
-                        <p class="text-sm text-blue-700">
-                            <i class="fas fa-bolt"></i> Commands are queued immediately. Online devices will be notified
-                            to poll right away.
-                        </p>
+    <div id="commandModal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
+        <div class="relative w-full max-w-md mx-auto animate-slide-up">
+            <div class="bg-white rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-terminal text-primary-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-accent-700">Send Command</h3>
+                                <p class="text-sm text-accent-500">Device: <span id="modalDeviceSN"
+                                        class="font-medium text-accent-700"></span></p>
+                            </div>
+                        </div>
+                        <button id="closeModal"
+                            class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors">
+                            <i class="fas fa-times text-accent-400 hover:text-accent-600"></i>
+                        </button>
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
+                </div>
+
+                <div class="p-6">
+                    <div class="bg-primary-50/50 border-l-4 border-primary-400 rounded-r-xl p-4 mb-6">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-bolt text-primary-400 mt-0.5"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-primary-700">
+                                    Commands are queued immediately. Online devices receive instant notifications.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
                         <button data-command="SYNCTIME"
-                            class="command-btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm">
-                            Sync Time
+                            class="command-btn group flex flex-col items-center justify-center p-4 bg-primary-50 hover:bg-primary-100 border border-primary-200 rounded-xl transition-all duration-200 hover:shadow-md">
+                            <i
+                                class="fas fa-clock text-primary-600 text-xl mb-2 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-sm font-medium text-primary-700">Sync Time</span>
                         </button>
+
                         <button data-command="REBOOT"
-                            class="command-btn bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded text-sm">
-                            Restart
+                            class="command-btn group flex flex-col items-center justify-center p-4 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 rounded-xl transition-all duration-200 hover:shadow-md">
+                            <i
+                                class="fas fa-power-off text-yellow-600 text-xl mb-2 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-sm font-medium text-yellow-700">Restart</span>
                         </button>
+
                         <button data-command="LOCK"
-                            class="command-btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm">
-                            Lock
+                            class="command-btn group flex flex-col items-center justify-center p-4 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl transition-all duration-200 hover:shadow-md">
+                            <i
+                                class="fas fa-lock text-red-600 text-xl mb-2 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-sm font-medium text-red-700">Lock</span>
                         </button>
+
                         <button data-command="UNLOCK"
-                            class="command-btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm">
-                            Unlock
+                            class="command-btn group flex flex-col items-center justify-center p-4 bg-green-50 hover:bg-green-100 border border-green-200 rounded-xl transition-all duration-200 hover:shadow-md">
+                            <i
+                                class="fas fa-unlock text-green-600 text-xl mb-2 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-sm font-medium text-green-700">Unlock</span>
                         </button>
+
                         <button data-command="DATA QUERY ATTLOG"
-                            class="command-btn bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-sm">
-                            Get Logs
+                            class="command-btn group flex flex-col items-center justify-center p-4 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-xl transition-all duration-200 hover:shadow-md">
+                            <i
+                                class="fas fa-download text-purple-600 text-xl mb-2 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-sm font-medium text-purple-700">Get Logs</span>
                         </button>
+
                         <button data-command="POWEROFF"
-                            class="command-btn bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded text-sm">
-                            Shutdown
+                            class="command-btn group flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl transition-all duration-200 hover:shadow-md">
+                            <i
+                                class="fas fa-power-off text-gray-600 text-xl mb-2 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-sm font-medium text-gray-700">Shutdown</span>
                         </button>
                     </div>
                 </div>
@@ -197,18 +577,58 @@
         const closeModalBtn = document.getElementById('closeModal');
         const modalDeviceSN = document.getElementById('modalDeviceSN');
 
+        // Tab functionality
+        function initializeTabs() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.id.replace('Tab', 'Content');
+
+                    // Remove active class from all tabs and buttons
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Add active class to clicked button and corresponding content
+                    button.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+        }
+
         // Event Listeners
         document.addEventListener('DOMContentLoaded', () => {
+            initializeTabs();
             loadDevices();
             loadCommands();
             loadAttendanceLogs();
+            initializeUI();
         });
 
         refreshDevicesBtn.addEventListener('click', loadDevices);
         refreshCommandsBtn.addEventListener('click', loadCommands);
 
+        // Add refresh attendance button listener
+        const refreshAttendanceBtn = document.getElementById('refreshAttendance');
+        if (refreshAttendanceBtn) {
+            refreshAttendanceBtn.addEventListener('click', loadAttendanceLogs);
+        }
+
         closeModalBtn.addEventListener('click', () => {
             commandModal.classList.add('hidden');
+        });
+
+        // Settings dropdown toggle
+        document.getElementById('settingsDropdown').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const menu = document.getElementById('settingsMenu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Close settings menu when clicking outside
+        document.addEventListener('click', () => {
+            document.getElementById('settingsMenu').classList.add('hidden');
         });
 
         // Command buttons event delegation
@@ -222,6 +642,38 @@
         });
 
         // Functions
+        function initializeUI() {
+            // Initialize any UI components that need setup
+            updateStats();
+        }
+
+        function updateStats() {
+            // Update device count
+            const deviceCount = document.querySelectorAll('#devicesTableBody tr').length;
+            document.getElementById('deviceCount').textContent = deviceCount;
+
+            // Update command count (pending/queued commands)
+            const commandRows = document.querySelectorAll('#commandsTableBody tr');
+            const activeCommands = Array.from(commandRows).filter(row => {
+                const statusCell = row.querySelector('td:nth-child(3) span');
+                return statusCell && ['queued', 'sent'].includes(statusCell.textContent.toLowerCase());
+            }).length;
+            document.getElementById('commandCount').textContent = activeCommands;
+
+            // Update today's log count
+            const today = new Date().toDateString();
+            const logRows = document.querySelectorAll('#attendanceTableBody tr');
+            const todayLogs = Array.from(logRows).filter(row => {
+                const timeCell = row.querySelector('td:nth-child(3)');
+                if (timeCell) {
+                    const logDate = new Date(timeCell.textContent).toDateString();
+                    return logDate === today;
+                }
+                return false;
+            }).length;
+            document.getElementById('logCount').textContent = todayLogs;
+        }
+
         async function loadDevices() {
             try {
                 const response = await fetch(`${API_BASE}/devices`);
@@ -229,41 +681,90 @@
 
                 devicesTableBody.innerHTML = '';
 
-                devices.forEach(device => {
-                    const row = document.createElement('tr');
-                    row.className = 'hover:bg-gray-50';
-
-                    // Format last seen date
-                    const lastSeen = device.last_seen ? new Date(device.last_seen).toLocaleString() : 'Never';
-
-                    // Status badge
-                    const statusClass = device.status === 'online' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
-                    const statusText = device.status.charAt(0).toUpperCase() + device.status.slice(1);
-
-                    row.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${device.serial_number}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${device.ip_address}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${device.model || 'Unknown'}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${lastSeen}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
-                                ${statusText}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button onclick="openCommandModal('${device.serial_number}')" class="text-indigo-600 hover:text-indigo-900 mr-3">
-                                <i class="fas fa-terminal"></i> Send Command
-                            </button>
-                            <button onclick="removeDevice('${device.serial_number}')" class="text-red-600 hover:text-red-900">
-                                <i class="fas fa-trash"></i> Remove
-                            </button>
-                        </td>
+                if (devices.length === 0) {
+                    devicesTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="px-6 py-12 text-center">
+                                <div class="flex flex-col items-center">
+                                    <i class="fas fa-desktop text-accent-300 text-4xl mb-4"></i>
+                                    <h3 class="text-lg font-medium text-accent-600 mb-1">No devices connected</h3>
+                                    <p class="text-accent-400">Devices will appear here once they connect to the server</p>
+                                </div>
+                            </td>
+                        </tr>
                     `;
+                } else {
+                    devices.forEach((device, index) => {
+                        const row = document.createElement('tr');
+                        row.className = 'hover:bg-white/50 transition-colors duration-200';
+                        row.style.animationDelay = `${index * 0.05}s`;
 
-                    devicesTableBody.appendChild(row);
-                });
+                        // Format last seen date
+                        const lastSeen = device.last_seen ?
+                            new Date(device.last_seen).toLocaleString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            }) : 'Never';
+
+                        // Status styling
+                        const isOnline = device.status === 'online';
+                        const statusDot = isOnline ? 'status-online' : 'status-offline';
+                        const statusText = isOnline ? 'Online' : 'Offline';
+                        const statusBg = isOnline ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200';
+
+                        row.innerHTML = `
+                            <td class="px-6 py-4">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 bg-accent-100 rounded-lg flex items-center justify-center mr-3">
+                                        <i class="fas fa-desktop text-accent-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-semibold text-accent-700">${device.serial_number}</div>
+                                        <div class="text-xs text-accent-500">${device.model || 'Unknown Model'}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-accent-600">${device.ip_address}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-accent-600">${device.model || 'Unknown'}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-accent-600">${lastSeen}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium border ${statusBg}">
+                                    <span class="status-dot ${statusDot}"></span>
+                                    ${statusText}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="openCommandModal('${device.serial_number}')" 
+                                        class="inline-flex items-center px-3 py-1.5 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-lg text-sm font-medium transition-colors duration-200 border border-primary-200">
+                                        <i class="fas fa-terminal text-xs mr-1.5"></i>
+                                        Command
+                                    </button>
+                                    <button onclick="removeDevice('${device.serial_number}')" 
+                                        class="inline-flex items-center px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg text-sm font-medium transition-colors duration-200 border border-red-200">
+                                        <i class="fas fa-trash text-xs mr-1.5"></i>
+                                        Remove
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+
+                        devicesTableBody.appendChild(row);
+                    });
+                }
+
+                updateStats();
             } catch (error) {
                 console.error('Error loading devices:', error);
+                showErrorState(devicesTableBody, 'Failed to load devices');
             }
         }
 
@@ -274,36 +775,79 @@
 
                 commandsTableBody.innerHTML = '';
 
-                commands.slice(0, 20).forEach(command => {
-                    const row = document.createElement('tr');
-                    row.className = 'hover:bg-gray-50';
-
-                    // Format dates
-                    const createdAt = command.created_at ? new Date(command.created_at).toLocaleString() : 'N/A';
-                    const executedAt = command.executed_at ? new Date(command.executed_at).toLocaleString() : 'Pending';
-
-                    // Status badge
-                    let statusClass = 'bg-gray-100 text-gray-800';
-                    if (command.status === 'completed') statusClass = 'bg-green-100 text-green-800';
-                    else if (command.status === 'failed') statusClass = 'bg-red-100 text-red-800';
-                    else if (command.status === 'sent') statusClass = 'bg-yellow-100 text-yellow-800';
-
-                    row.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${command.device_sn}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${command.command}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
-                                ${command.status}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${createdAt}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${command.response || 'N/A'}</td>
+                if (commands.length === 0) {
+                    commandsTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center">
+                                <div class="flex flex-col items-center">
+                                    <i class="fas fa-terminal text-accent-300 text-4xl mb-4"></i>
+                                    <h3 class="text-lg font-medium text-accent-600 mb-1">No commands yet</h3>
+                                    <p class="text-accent-400">Command history will appear here</p>
+                                </div>
+                            </td>
+                        </tr>
                     `;
+                } else {
+                    commands.slice(0, 20).forEach((command, index) => {
+                        const row = document.createElement('tr');
+                        row.className = 'hover:bg-white/50 transition-colors duration-200';
+                        row.style.animationDelay = `${index * 0.05}s`;
 
-                    commandsTableBody.appendChild(row);
-                });
+                        // Format dates
+                        const createdAt = command.created_at ?
+                            new Date(command.created_at).toLocaleString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            }) : 'N/A';
+
+                        // Status styling
+                        let statusIcon = 'fas fa-clock';
+                        let statusClass = 'bg-gray-50 text-gray-700 border-gray-200';
+
+                        if (command.status === 'completed') {
+                            statusIcon = 'fas fa-check-circle';
+                            statusClass = 'bg-green-50 text-green-700 border-green-200';
+                        } else if (command.status === 'failed') {
+                            statusIcon = 'fas fa-times-circle';
+                            statusClass = 'bg-red-50 text-red-700 border-red-200';
+                        } else if (command.status === 'sent') {
+                            statusIcon = 'fas fa-paper-plane';
+                            statusClass = 'bg-yellow-50 text-yellow-700 border-yellow-200';
+                        }
+
+                        row.innerHTML = `
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-semibold text-accent-700">${command.device_sn}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="inline-flex items-center px-2.5 py-1 bg-accent-100 text-accent-700 rounded-lg text-xs font-mono">
+                                    ${command.command}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium border ${statusClass}">
+                                    <i class="${statusIcon} mr-1.5"></i>
+                                    ${command.status}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-accent-600">${createdAt}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-accent-600 max-w-xs truncate" title="${command.response || 'No response'}">${command.response || 'No response'}</div>
+                            </td>
+                        `;
+
+                        commandsTableBody.appendChild(row);
+                    });
+                }
+
+                updateStats();
             } catch (error) {
                 console.error('Error loading commands:', error);
+                showErrorState(commandsTableBody, 'Failed to load commands');
             }
         }
 
@@ -314,26 +858,95 @@
 
                 attendanceTableBody.innerHTML = '';
 
-                logs.forEach(log => {
-                    const row = document.createElement('tr');
-                    row.className = 'hover:bg-gray-50';
-
-                    // Format timestamp
-                    const timestamp = new Date(log.timestamp).toLocaleString();
-
-                    row.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.device_sn}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.user_id}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${timestamp}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.verify_mode}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.status}</td>
+                if (logs.length === 0) {
+                    attendanceTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center">
+                                <div class="flex flex-col items-center">
+                                    <i class="fas fa-chart-line text-accent-300 text-4xl mb-4"></i>
+                                    <h3 class="text-lg font-medium text-accent-600 mb-1">No attendance logs</h3>
+                                    <p class="text-accent-400">Attendance records will appear here when devices sync</p>
+                                </div>
+                            </td>
+                        </tr>
                     `;
+                } else {
+                    logs.forEach((log, index) => {
+                        const row = document.createElement('tr');
+                        row.className = 'hover:bg-white/50 transition-colors duration-200';
+                        row.style.animationDelay = `${index * 0.05}s`;
 
-                    attendanceTableBody.appendChild(row);
-                });
+                        // Format timestamp
+                        const timestamp = new Date(log.timestamp).toLocaleString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit'
+                        });
+
+                        // Verification mode styling
+                        const verifyModeClass = log.verify_mode === '1' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-purple-50 text-purple-700 border-purple-200';
+                        const verifyModeText = log.verify_mode === '1' ? 'Fingerprint' : 'Card/Pin';
+                        const verifyModeIcon = log.verify_mode === '1' ? 'fas fa-fingerprint' : 'fas fa-id-card';
+
+                        // Status styling
+                        const statusClass = log.status === '1' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200';
+                        const statusText = log.status === '1' ? 'Valid' : 'Invalid';
+                        const statusIcon = log.status === '1' ? 'fas fa-check' : 'fas fa-times';
+
+                        row.innerHTML = `
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-semibold text-accent-700">${log.device_sn}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-accent-100 rounded-lg flex items-center justify-center mr-3">
+                                        <i class="fas fa-user text-accent-600 text-sm"></i>
+                                    </div>
+                                    <div class="text-sm font-medium text-accent-700">${log.user_id}</div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-accent-600">${timestamp}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium border ${verifyModeClass}">
+                                    <i class="${verifyModeIcon} mr-1.5"></i>
+                                    ${verifyModeText}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium border ${statusClass}">
+                                    <i class="${statusIcon} mr-1.5"></i>
+                                    ${statusText}
+                                </span>
+                            </td>
+                        `;
+
+                        attendanceTableBody.appendChild(row);
+                    });
+                }
+
+                updateStats();
             } catch (error) {
                 console.error('Error loading attendance logs:', error);
+                showErrorState(attendanceTableBody, 'Failed to load attendance logs');
             }
+        }
+
+        function showErrorState(container, message) {
+            container.innerHTML = `
+                <tr>
+                    <td colspan="6" class="px-6 py-12 text-center">
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-exclamation-triangle text-red-300 text-4xl mb-4"></i>
+                            <h3 class="text-lg font-medium text-red-600 mb-1">Error</h3>
+                            <p class="text-red-400">${message}</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
         }
 
         async function sendCommand(deviceSN, command) {
@@ -357,15 +970,15 @@
                 const device = devices.find(d => d.serial_number === deviceSN);
 
                 if (device && device.status === 'online') {
-                    alert(`Command "${command}" has been queued and an immediate notification has been sent to device ${deviceSN}. The device should poll for commands right away.`);
+                    showToast(`Command "${command}" sent to online device ${deviceSN}`, 'success');
                 } else {
-                    alert(`Command "${command}" has been queued for device ${deviceSN}. The device will receive it when it next polls the server.`);
+                    showToast(`Command "${command}" queued for device ${deviceSN}`, 'info');
                 }
 
                 return result;
             } catch (error) {
                 console.error('Error sending command:', error);
-                alert(`Failed to send command: ${error.message}`);
+                showToast(`Failed to send command: ${error.message}`, 'error');
             }
         }
 
@@ -374,6 +987,62 @@
             selectedDeviceSN = deviceSN;
             modalDeviceSN.textContent = deviceSN;
             commandModal.classList.remove('hidden');
+        };
+
+        // Toast notification system
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const toastId = 'toast-' + Date.now();
+            toast.id = toastId;
+
+            const bgColor = {
+                'success': 'bg-green-500',
+                'error': 'bg-red-500',
+                'warning': 'bg-yellow-500',
+                'info': 'bg-primary-500'
+            }[type] || 'bg-primary-500';
+
+            const icon = {
+                'success': 'fas fa-check-circle',
+                'error': 'fas fa-exclamation-circle',
+                'warning': 'fas fa-exclamation-triangle',
+                'info': 'fas fa-info-circle'
+            }[type] || 'fas fa-info-circle';
+
+            toast.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-4 rounded-xl shadow-lg transform translate-x-full transition-transform duration-300 z-50`;
+            toast.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <i class="${icon}"></i>
+                    <span class="font-medium">${message}</span>
+                    <button onclick="closeToast('${toastId}')" class="ml-4 hover:bg-white/20 rounded-lg p-1">
+                        <i class="fas fa-times text-sm"></i>
+                    </button>
+                </div>
+            `;
+
+            document.body.appendChild(toast);
+
+            // Show toast
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                closeToast(toastId);
+            }, 5000);
+        }
+
+        window.closeToast = function (toastId) {
+            const toast = document.getElementById(toastId);
+            if (toast) {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }
         };
 
         // Auto-refresh every 30 seconds
@@ -395,11 +1064,11 @@
                     }
 
                     const result = await response.json();
-                    alert(result.message);
+                    showToast(result.message, 'success');
                     loadCommands(); // Refresh the commands display
                 } catch (error) {
                     console.error('Error clearing queued commands:', error);
-                    alert(`Failed to clear queued commands: ${error.message}`);
+                    showToast(`Failed to clear queued commands: ${error.message}`, 'error');
                 }
             }
         }
@@ -416,11 +1085,11 @@
                     }
 
                     const result = await response.json();
-                    alert(result.message);
+                    showToast(result.message, 'success');
                     loadAttendanceLogs(); // Refresh the attendance logs display
                 } catch (error) {
                     console.error('Error clearing attendance logs:', error);
-                    alert(`Failed to clear attendance logs: ${error.message}`);
+                    showToast(`Failed to clear attendance logs: ${error.message}`, 'error');
                 }
             }
         }
@@ -437,13 +1106,13 @@
                     }
 
                     const result = await response.json();
-                    alert(result.message);
+                    showToast(result.message, 'success');
                     loadDevices(); // Refresh the devices display
                     loadCommands(); // Refresh the commands display
                     loadAttendanceLogs(); // Refresh the attendance logs display
                 } catch (error) {
                     console.error('Error removing device:', error);
-                    alert(`Failed to remove device: ${error.message}`);
+                    showToast(`Failed to remove device: ${error.message}`, 'error');
                 }
             }
         }
