@@ -204,13 +204,32 @@ def clear_commands_from_queue(sn: str, command_ids: List[int]):
     
     logger.info(f"Cleared {len(command_ids)} commands from queue for device {sn}")
 
+# Add middleware to log all requests
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start_time = time.time()
+    
+    # Log all incoming requests
+    logger.info(f"[Request] {request.method} {request.url} from {request.client.host}")
+    
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    
+    logger.info(f"[Response] {request.method} {request.url.path} - Status: {response.status_code} - Time: {process_time:.4f}s")
+    
+    return response
+
 # ADMS Endpoints
 @app.get("/iclock/getrequest", response_class=PlainTextResponse)
 async def get_request(request: Request):
     sn = request.query_params.get("SN")
     ip = request.client.host
     
+    # Log all query parameters for debugging
+    logger.info(f"[ZKTeco-GetRequest] Device connection from {ip} - Query params: {dict(request.query_params)}")
+    
     if not sn:
+        logger.error(f"[ZKTeco-GetRequest] Missing SN parameter from {ip}")
         raise HTTPException(status_code=400, detail="SN parameter required")
     
     # Register or update device
@@ -349,14 +368,17 @@ async def receive_fdata(request: Request):
     sn = request.query_params.get("SN")
     ip = request.client.host
     
+    logger.info(f"[ZKTeco-FData] Fingerprint data received from {ip} - Query params: {dict(request.query_params)}")
+    
     if not sn:
+        logger.error(f"[ZKTeco-FData] Missing SN parameter from {ip}")
         raise HTTPException(status_code=400, detail="SN parameter required")
     
     # Register or update device
     register_or_update_device(sn, ip)
     
     # Log the request
-    logger.info(f"Device {sn} sent fingerprint data from {ip}")
+    logger.info(f"[ZKTeco-FData] Device {sn} sent fingerprint data from {ip}")
     
     return PlainTextResponse("OK", headers={"Content-Type": "text/plain"})
 
@@ -366,7 +388,10 @@ async def receive_data(request: Request):
     sn = request.query_params.get("SN")
     ip = request.client.host
     
+    logger.info(f"[ZKTeco-CData] Attendance data received from {ip} - Query params: {dict(request.query_params)}")
+    
     if not sn:
+        logger.error(f"[ZKTeco-CData] Missing SN parameter from {ip}")
         raise HTTPException(status_code=400, detail="SN parameter required")
     
     # Extract additional parameters
@@ -545,6 +570,25 @@ async def receive_data(request: Request):
                 "Cache-Control": "no-store"
             }
         )
+
+# Catch-all endpoint for any other iclock requests
+@app.api_route("/iclock/{path:path}", methods=["GET", "POST"], response_class=PlainTextResponse)
+async def catch_iclock_requests(request: Request, path: str):
+    ip = request.client.host
+    method = request.method
+    
+    logger.info(f"[ZKTeco-CatchAll] {method} /iclock/{path} from {ip} - Query params: {dict(request.query_params)}")
+    
+    # Try to get body for POST requests
+    if method == "POST":
+        try:
+            body = await request.body()
+            if body:
+                logger.info(f"[ZKTeco-CatchAll] POST body: {body.decode('utf-8', errors='ignore')}")
+        except Exception as e:
+            logger.warning(f"[ZKTeco-CatchAll] Could not read POST body: {e}")
+    
+    return PlainTextResponse("OK", headers={"Content-Type": "text/plain; charset=utf-8"})
 
 # API Endpoints for Web UI
 @app.get("/api/devices")
@@ -759,4 +803,4 @@ init_db()
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="128.199.24.193", port=8080)
+    uvicorn.run(app, host="0.0.0.0", port=8080)
