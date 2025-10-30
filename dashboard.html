@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZKTeco ADMS Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">ZKTeco ADMS Dashboard</h1>
+                    <p class="text-gray-600">Manage your biometric devices</p>
+                </div>
+                <div class="flex space-x-2">
+                    <button id="clearQueuedCommands"
+                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm">
+                        <i class="fas fa-trash-alt"></i> Clear Queued Commands
+                    </button>
+                    <button id="clearAttendanceLogs"
+                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm">
+                        <i class="fas fa-trash-alt"></i> Clear Attendance Logs
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Devices Section -->
+        <section class="mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold text-gray-700">Connected Devices</h2>
+                <button id="refreshDevices"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Serial Number</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                IP Address</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Model</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Last Seen</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="devicesTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Devices will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Commands Section -->
+        <section class="mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold text-gray-700">Recent Commands</h2>
+                <button id="refreshCommands"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-2 mb-4">
+                <p class="text-sm text-blue-700">
+                    <i class="fas fa-info-circle"></i> Commands are sent immediately to online devices. Status will
+                    update from "queued" to "sent" for notified devices, and to "completed" or "failed" after execution.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Device SN</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Command</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Created At</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Response</th>
+                        </tr>
+                    </thead>
+                    <tbody id="commandsTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Commands will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Attendance Logs Section -->
+        <section>
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Recent Attendance Logs</h2>
+
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Device SN</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                User ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Timestamp</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Verify Mode</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendanceTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Attendance logs will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal for sending commands -->
+    <div id="commandModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex items-start justify-between">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Send Command</h3>
+                    <button id="closeModal" class="text-gray-400 hover:text-gray-500">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500 mb-4">Select a command to send to device: <span id="modalDeviceSN"
+                            class="font-semibold"></span></p>
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-2 mb-4">
+                        <p class="text-sm text-blue-700">
+                            <i class="fas fa-bolt"></i> Commands are queued immediately. Online devices will be notified
+                            to poll right away.
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button data-command="SYNCTIME"
+                            class="command-btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm">
+                            Sync Time
+                        </button>
+                        <button data-command="REBOOT"
+                            class="command-btn bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded text-sm">
+                            Restart
+                        </button>
+                        <button data-command="LOCK"
+                            class="command-btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm">
+                            Lock
+                        </button>
+                        <button data-command="UNLOCK"
+                            class="command-btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm">
+                            Unlock
+                        </button>
+                        <button data-command="DATA QUERY ATTLOG"
+                            class="command-btn bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded text-sm">
+                            Get Logs
+                        </button>
+                        <button data-command="POWEROFF"
+                            class="command-btn bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded text-sm">
+                            Shutdown
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        const API_BASE = '/api';
+        let selectedDeviceSN = null;
+
+        // DOM Elements
+        const devicesTableBody = document.getElementById('devicesTableBody');
+        const commandsTableBody = document.getElementById('commandsTableBody');
+        const attendanceTableBody = document.getElementById('attendanceTableBody');
+        const refreshDevicesBtn = document.getElementById('refreshDevices');
+        const refreshCommandsBtn = document.getElementById('refreshCommands');
+        const commandModal = document.getElementById('commandModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const modalDeviceSN = document.getElementById('modalDeviceSN');
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDevices();
+            loadCommands();
+            loadAttendanceLogs();
+        });
+
+        refreshDevicesBtn.addEventListener('click', loadDevices);
+        refreshCommandsBtn.addEventListener('click', loadCommands);
+
+        closeModalBtn.addEventListener('click', () => {
+            commandModal.classList.add('hidden');
+        });
+
+        // Command buttons event delegation
+        document.querySelectorAll('.command-btn').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const command = e.target.getAttribute('data-command');
+                await sendCommand(selectedDeviceSN, command);
+                commandModal.classList.add('hidden');
+                loadCommands();
+            });
+        });
+
+        // Functions
+        async function loadDevices() {
+            try {
+                const response = await fetch(`${API_BASE}/devices`);
+                const devices = await response.json();
+
+                devicesTableBody.innerHTML = '';
+
+                devices.forEach(device => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50';
+
+                    // Format last seen date
+                    const lastSeen = device.last_seen ? new Date(device.last_seen).toLocaleString() : 'Never';
+
+                    // Status badge
+                    const statusClass = device.status === 'online' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                    const statusText = device.status.charAt(0).toUpperCase() + device.status.slice(1);
+
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${device.serial_number}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${device.ip_address}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${device.model || 'Unknown'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${lastSeen}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button onclick="openCommandModal('${device.serial_number}')" class="text-indigo-600 hover:text-indigo-900 mr-3">
+                                <i class="fas fa-terminal"></i> Send Command
+                            </button>
+                            <button onclick="removeDevice('${device.serial_number}')" class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i> Remove
+                            </button>
+                        </td>
+                    `;
+
+                    devicesTableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading devices:', error);
+            }
+        }
+
+        async function loadCommands() {
+            try {
+                const response = await fetch(`${API_BASE}/commands`);
+                const commands = await response.json();
+
+                commandsTableBody.innerHTML = '';
+
+                commands.slice(0, 20).forEach(command => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50';
+
+                    // Format dates
+                    const createdAt = command.created_at ? new Date(command.created_at).toLocaleString() : 'N/A';
+                    const executedAt = command.executed_at ? new Date(command.executed_at).toLocaleString() : 'Pending';
+
+                    // Status badge
+                    let statusClass = 'bg-gray-100 text-gray-800';
+                    if (command.status === 'completed') statusClass = 'bg-green-100 text-green-800';
+                    else if (command.status === 'failed') statusClass = 'bg-red-100 text-red-800';
+                    else if (command.status === 'sent') statusClass = 'bg-yellow-100 text-yellow-800';
+
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${command.device_sn}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${command.command}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                                ${command.status}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${createdAt}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${command.response || 'N/A'}</td>
+                    `;
+
+                    commandsTableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading commands:', error);
+            }
+        }
+
+        async function loadAttendanceLogs() {
+            try {
+                const response = await fetch(`${API_BASE}/attendance?limit=20`);
+                const logs = await response.json();
+
+                attendanceTableBody.innerHTML = '';
+
+                logs.forEach(log => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50';
+
+                    // Format timestamp
+                    const timestamp = new Date(log.timestamp).toLocaleString();
+
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${log.device_sn}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.user_id}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${timestamp}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.verify_mode}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${log.status}</td>
+                    `;
+
+                    attendanceTableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading attendance logs:', error);
+            }
+        }
+
+        async function sendCommand(deviceSN, command) {
+            try {
+                const response = await fetch(`${API_BASE}/devices/${deviceSN}/command`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ command }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to send command: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                // Check if device is online to provide better feedback
+                const devicesResponse = await fetch(`${API_BASE}/devices`);
+                const devices = await devicesResponse.json();
+                const device = devices.find(d => d.serial_number === deviceSN);
+
+                if (device && device.status === 'online') {
+                    alert(`Command "${command}" has been queued and an immediate notification has been sent to device ${deviceSN}. The device should poll for commands right away.`);
+                } else {
+                    alert(`Command "${command}" has been queued for device ${deviceSN}. The device will receive it when it next polls the server.`);
+                }
+
+                return result;
+            } catch (error) {
+                console.error('Error sending command:', error);
+                alert(`Failed to send command: ${error.message}`);
+            }
+        }
+
+        // Make function available globally for onclick handlers
+        window.openCommandModal = function (deviceSN) {
+            selectedDeviceSN = deviceSN;
+            modalDeviceSN.textContent = deviceSN;
+            commandModal.classList.remove('hidden');
+        };
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            loadDevices();
+            loadCommands();
+        }, 30000);
+
+        // New functions for the added buttons
+        async function clearQueuedCommands() {
+            if (confirm("Are you sure you want to clear all queued commands? This action cannot be undone.")) {
+                try {
+                    const response = await fetch(`${API_BASE}/commands/queued`, {
+                        method: 'DELETE'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Failed to clear queued commands: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    alert(result.message);
+                    loadCommands(); // Refresh the commands display
+                } catch (error) {
+                    console.error('Error clearing queued commands:', error);
+                    alert(`Failed to clear queued commands: ${error.message}`);
+                }
+            }
+        }
+
+        async function clearAttendanceLogs() {
+            if (confirm("Are you sure you want to clear all attendance logs? This action cannot be undone.")) {
+                try {
+                    const response = await fetch(`${API_BASE}/attendance`, {
+                        method: 'DELETE'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Failed to clear attendance logs: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    alert(result.message);
+                    loadAttendanceLogs(); // Refresh the attendance logs display
+                } catch (error) {
+                    console.error('Error clearing attendance logs:', error);
+                    alert(`Failed to clear attendance logs: ${error.message}`);
+                }
+            }
+        }
+
+        async function removeDevice(deviceSN) {
+            if (confirm(`Are you sure you want to remove device ${deviceSN} and all its related data? This action cannot be undone.`)) {
+                try {
+                    const response = await fetch(`${API_BASE}/devices/${deviceSN}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Failed to remove device: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    alert(result.message);
+                    loadDevices(); // Refresh the devices display
+                    loadCommands(); // Refresh the commands display
+                    loadAttendanceLogs(); // Refresh the attendance logs display
+                } catch (error) {
+                    console.error('Error removing device:', error);
+                    alert(`Failed to remove device: ${error.message}`);
+                }
+            }
+        }
+
+        // Add event listeners for the new buttons
+        document.getElementById('clearQueuedCommands').addEventListener('click', clearQueuedCommands);
+        document.getElementById('clearAttendanceLogs').addEventListener('click', clearAttendanceLogs);
+    </script>
+</body>
+
+</html>

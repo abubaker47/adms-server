@@ -1,0 +1,8 @@
+Requirement already satisfied: fastapi in ./venv/lib/python3.13/site-packages (0.68.0)
+Requirement already satisfied: pydantic in ./venv/lib/python3.13/site-packages (1.8.2)
+Requirement already satisfied: uvicorn in ./venv/lib/python3.13/site-packages (0.15.0)
+Requirement already satisfied: starlette==0.14.2 in ./venv/lib/python3.13/site-packages (from fastapi) (0.14.2)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in ./venv/lib/python3.13/site-packages (from pydantic) (4.15.0)
+Requirement already satisfied: asgiref>=3.4.0 in ./venv/lib/python3.13/site-packages (from uvicorn) (3.10.0)
+Requirement already satisfied: click>=7.0 in ./venv/lib/python3.13/site-packages (from uvicorn) (8.3.0)
+Requirement already satisfied: h11>=0.8 in ./venv/lib/python3.13/site-packages (from uvicorn) (0.16.0)
