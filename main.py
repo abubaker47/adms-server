@@ -239,7 +239,7 @@ async def get_request(request: Request):
     commands = get_pending_commands(sn)
     
     if commands:
-        # Format commands as plain text (C: command) with proper ZKTeco format
+        # Format commands with proper ZKTeco ADMS protocol format: C:{id}:{command}
         response_text = ""
         command_ids = []
         for command_id, command in commands:
@@ -249,7 +249,8 @@ async def get_request(request: Request):
             if clean_command.startswith("C:"):
                 clean_command = clean_command[2:].strip()
             
-            response_text += f"C: {clean_command}\r\n"  # Use \r\n as recommended
+            # Format as C:{id}:{command} per ZKTeco ADMS protocol
+            response_text += f"C:{command_id}:{clean_command}\r\n"
             command_ids.append(command_id)
         
         # Clear commands from queue
@@ -285,10 +286,12 @@ async def device_cmd(request: Request):
     ip = request.client.host
     response_param = request.query_params.get("Response")
     cmd = request.query_params.get("CMD")
-    cmd_id = request.query_params.get("CMDID")
+    
+    # The ID parameter is sent by the device to identify which command it's responding to
+    cmd_id_param = request.query_params.get("ID")
     
     # Log all query parameters for debugging
-    logger.info(f"[DeviceCMD] Received request from {ip} with params: SN={sn}, CMD={cmd}, Response={response_param}, CMDID={cmd_id}, Method={request.method}")
+    logger.info(f"[DeviceCMD] Received request from {ip} with params: SN={sn}, CMD={cmd}, Response={response_param}, ID={cmd_id_param}, Method={request.method}")
     
     if not sn:
         logger.warning("[DeviceCMD] SN parameter missing")
@@ -297,18 +300,46 @@ async def device_cmd(request: Request):
     # Register or update device
     register_or_update_device(sn, ip)
     
-    # Log the request
-    logger.info(f"[DeviceCMD] Device {sn} responded to command {cmd} with response={response_param}")
-    
-    # Update command status if CMD is provided
-    if cmd:
+    # Update command status if ID is provided (this is the command acknowledgment from device)
+    if cmd_id_param:
+        try:
+            command_id = int(cmd_id_param)
+            
+            # Verify this command belongs to this device
+            conn = sqlite3.connect('adms.db')
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                SELECT id, command FROM device_commands 
+                WHERE id = ? AND device_sn = ?
+            ''', (command_id, sn))
+            
+            command_record = cursor.fetchone()
+            conn.close()
+            
+            if command_record:
+                # Update command status based on response
+                if response_param and response_param.upper() == "OK":
+                    update_command_status(command_id, "completed", response_param)
+                    logger.info(f"[DeviceCMD] Command ID {command_id} ({command_record[1]}) completed successfully on device {sn}")
+                else:
+                    update_command_status(command_id, "failed", response_param or "No response")
+                    logger.warning(f"[DeviceCMD] Command ID {command_id} ({command_record[1]}) failed on device {sn} with response: {response_param}")
+            else:
+                logger.warning(f"[DeviceCMD] Command ID {command_id} not found for device {sn}")
+        except ValueError:
+            logger.error(f"[DeviceCMD] Invalid command ID format: {cmd_id_param}")
+        except Exception as e:
+            logger.error(f"[DeviceCMD] Error updating command status: {e}", exc_info=True)
+    elif cmd:
+        # Fallback: Try to match by command text if ID is not provided
+        logger.info(f"[DeviceCMD] No ID provided, attempting to match by command text: {cmd}")
         try:
             # Find the command in the database by command text and device SN
             conn = sqlite3.connect('adms.db')
             cursor = conn.cursor()
             
             # Look for the most recent command with this text that was sent
-            # Use exact match instead of LIKE for better accuracy
             cursor.execute('''
                 SELECT id, command FROM device_commands 
                 WHERE device_sn = ? AND status = 'sent'
@@ -346,7 +377,7 @@ async def device_cmd(request: Request):
                     update_command_status(matched_command_id, "completed", response_param)
                     logger.info(f"[DeviceCMD] Command {matched_command} completed successfully on device {sn}")
                 else:
-                    update_command_status(matched_command_id, "failed", response_param)
+                    update_command_status(matched_command_id, "failed", response_param or "No response")
                     logger.info(f"[DeviceCMD] Command {matched_command} failed on device {sn} with response: {response_param}")
             else:
                 logger.warning(f"[DeviceCMD] No matching command found for device {sn} with command {cmd}")
@@ -359,7 +390,7 @@ async def device_cmd(request: Request):
         except Exception as e:
             logger.error(f"[DeviceCMD] Error updating command status: {e}", exc_info=True)
     else:
-        logger.warning(f"[DeviceCMD] No command specified in device response from {sn}")
+        logger.warning(f"[DeviceCMD] No command or ID specified in device response from {sn}")
     
     return PlainTextResponse("OK", headers={"Content-Type": "text/plain; charset=utf-8"})
 
@@ -410,7 +441,7 @@ async def receive_data(request: Request):
         commands = get_pending_commands(sn)
         
         if commands:
-            # Format commands as plain text (C: command) with proper ZKTeco format
+            # Format commands with proper ZKTeco ADMS protocol format: C:{id}:{command}
             response_text = ""
             command_ids = []
             for command_id, command in commands:
@@ -420,7 +451,8 @@ async def receive_data(request: Request):
                 if clean_command.startswith("C:"):
                     clean_command = clean_command[2:].strip()
                 
-                response_text += f"C: {clean_command}\r\n"  # Use \r\n as recommended
+                # Format as C:{id}:{command} per ZKTeco ADMS protocol
+                response_text += f"C:{command_id}:{clean_command}\r\n"
                 command_ids.append(command_id)
             
             # Clear commands from queue
@@ -461,7 +493,7 @@ async def receive_data(request: Request):
         commands = get_pending_commands(sn)
         
         if commands:
-            # Format commands as plain text (C: command) with proper ZKTeco format
+            # Format commands with proper ZKTeco ADMS protocol format: C:{id}:{command}
             response_text = ""
             command_ids = []
             for command_id, command in commands:
@@ -471,7 +503,8 @@ async def receive_data(request: Request):
                 if clean_command.startswith("C:"):
                     clean_command = clean_command[2:].strip()
                 
-                response_text += f"C: {clean_command}\r\n"  # Use \r\n as recommended
+                # Format as C:{id}:{command} per ZKTeco ADMS protocol
+                response_text += f"C:{command_id}:{clean_command}\r\n"
                 command_ids.append(command_id)
             
             # Clear commands from queue
@@ -532,7 +565,7 @@ async def receive_data(request: Request):
     commands = get_pending_commands(sn)
     
     if commands:
-        # Format commands as plain text (C: command) with proper ZKTeco format
+        # Format commands with proper ZKTeco ADMS protocol format: C:{id}:{command}
         response_text = ""
         command_ids = []
         for command_id, command in commands:
@@ -542,7 +575,8 @@ async def receive_data(request: Request):
             if clean_command.startswith("C:"):
                 clean_command = clean_command[2:].strip()
             
-            response_text += f"C: {clean_command}\r\n"  # Use \r\n as recommended
+            # Format as C:{id}:{command} per ZKTeco ADMS protocol
+            response_text += f"C:{command_id}:{clean_command}\r\n"
             command_ids.append(command_id)
         
         # Clear commands from queue
