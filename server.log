@@ -1,404 +1,59 @@
 nohup: ignoring input
 INFO:     Will watch for changes in these directories: ['/root/aogc']
 INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
-INFO:     Started reloader process [39634] using StatReload
-INFO:     Started server process [39638]
+INFO:     Started reloader process [80511] using StatReload
+INFO:     Started server process [80515]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:main:[Request] HEAD http://localhost:8080/ from 127.0.0.1
-INFO:main:[Response] HEAD / - Status: 405 - Time: 0.0005s
-INFO:     127.0.0.1:59872 - "HEAD / HTTP/1.1" 405 Method Not Allowed
-INFO:main:[Request] GET http://localhost:8080/ from 127.0.0.1
-INFO:main:[Response] GET / - Status: 200 - Time: 0.0066s
-INFO:     127.0.0.1:59884 - "GET / HTTP/1.1" 200 OK
-INFO:main:[Request] HEAD http://128.199.24.193:8080/ from 128.199.24.193
-INFO:main:[Response] HEAD / - Status: 405 - Time: 0.0004s
-INFO:     128.199.24.193:53368 - "HEAD / HTTP/1.1" 405 Method Not Allowed
-INFO:main:[Request] GET http://128.199.24.193:8080/ from 128.199.24.193
-INFO:main:[Response] GET / - Status: 200 - Time: 0.0027s
-INFO:     128.199.24.193:55110 - "GET / HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/ from 180.222.139.202
-INFO:main:[Response] GET / - Status: 200 - Time: 0.0013s
-INFO:     180.222.139.202:49670 - "GET / HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0013s
-INFO:     180.222.139.202:52671 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0009s
-INFO:     180.222.139.202:63767 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/attendance?limit=20 from 180.222.139.202
-INFO:main:[Response] GET /api/attendance - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:54747 - "GET /api/attendance?limit=20 HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0020s
-INFO:     180.222.139.202:61073 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0023s
-INFO:     180.222.139.202:57533 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:58491 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:62058 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:62058 - "GET /api/commands HTTP/1.1" 200 OK
-WARNING:  StatReload detected changes in 'start_server.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [39638]
-INFO:     Started server process [40351]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0018s
-INFO:     180.222.139.202:64417 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:54699 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0017s
-INFO:     180.222.139.202:56586 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0009s
-INFO:     180.222.139.202:56907 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:51347 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:54345 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/ from 180.222.139.202
-INFO:main:[Response] GET / - Status: 200 - Time: 0.0048s
-INFO:     180.222.139.202:50991 - "GET / HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0021s
-INFO:     180.222.139.202:50950 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Request] GET http://128.199.24.193:8080/api/attendance?limit=20 from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0023s
-INFO:     180.222.139.202:54682 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Response] GET /api/attendance - Status: 200 - Time: 0.0018s
-INFO:     180.222.139.202:61454 - "GET /api/attendance?limit=20 HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/favicon.ico from 180.222.139.202
-INFO:main:[Response] GET /favicon.ico - Status: 404 - Time: 0.0006s
-INFO:     180.222.139.202:61454 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0023s
-INFO:     180.222.139.202:57033 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:56854 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/ from 180.222.139.202
-INFO:main:[Response] GET / - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:59839 - "GET / HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0023s
-INFO:     180.222.139.202:59839 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0013s
-INFO:     180.222.139.202:49677 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/attendance?limit=20 from 180.222.139.202
-INFO:main:[Response] GET /api/attendance - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:65260 - "GET /api/attendance?limit=20 HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:58101 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0016s
-INFO:     180.222.139.202:58101 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0017s
-INFO:     180.222.139.202:59251 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:56575 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:49670 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0009s
-INFO:     180.222.139.202:54191 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0013s
-INFO:     180.222.139.202:61708 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:61708 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0031s
-INFO:     180.222.139.202:52442 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0017s
-INFO:     180.222.139.202:52050 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0025s
-INFO:     180.222.139.202:59208 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0018s
-INFO:     180.222.139.202:50851 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0021s
-INFO:     180.222.139.202:60005 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0017s
-INFO:     180.222.139.202:54407 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0016s
-INFO:     180.222.139.202:52100 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:52100 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:50971 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:53413 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0022s
-INFO:     180.222.139.202:51548 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:64232 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0018s
-INFO:     180.222.139.202:50582 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:50582 - "GET /api/commands HTTP/1.1" 200 OK
 INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
 INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
 INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0029s
-INFO:     180.222.139.202:53267 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0020s
-INFO:     180.222.139.202:55762 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0016s
-INFO:     180.222.139.202:57160 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0009s
-INFO:     180.222.139.202:55195 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0016s
-INFO:     180.222.139.202:51415 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0009s
-INFO:     180.222.139.202:54217 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:60702 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:60331 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:54297 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:56294 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0025s
-INFO:     180.222.139.202:63264 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0013s
-INFO:     180.222.139.202:55499 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0015s
-INFO:     180.222.139.202:50986 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0009s
-INFO:     180.222.139.202:59131 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0016s
-INFO:     180.222.139.202:61213 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:51270 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/ from 180.222.139.202
-INFO:main:[Response] GET / - Status: 200 - Time: 0.0007s
-INFO:     180.222.139.202:51270 - "GET / HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:51270 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/attendance?limit=20 from 180.222.139.202
-INFO:main:[Response] GET /api/attendance - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:57001 - "GET /api/attendance?limit=20 HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:56425 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/favicon.ico from 180.222.139.202
-INFO:main:[Response] GET /favicon.ico - Status: 404 - Time: 0.0005s
-INFO:     180.222.139.202:51270 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:52330 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0009s
-INFO:     180.222.139.202:50060 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:49700 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:57925 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:52456 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:53049 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/ from 180.222.139.202
-INFO:main:[Response] GET / - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:62335 - "GET / HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0020s
-INFO:     180.222.139.202:59913 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/attendance?limit=20 from 180.222.139.202
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Request] GET http://128.199.24.193:8080/favicon.ico from 180.222.139.202
-INFO:main:[Response] GET /api/attendance - Status: 200 - Time: 0.0049s
-INFO:     180.222.139.202:56652 - "GET /api/attendance?limit=20 HTTP/1.1" 200 OK
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0028s
-INFO:     180.222.139.202:63259 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Response] GET /favicon.ico - Status: 404 - Time: 0.0020s
-INFO:     180.222.139.202:56816 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:63840 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:64713 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:57771 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:56975 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0016s
-INFO:     180.222.139.202:54022 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:54022 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:60563 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0015s
-INFO:     180.222.139.202:51924 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:60290 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:53272 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
+INFO:     180.222.139.202:57803 - "GET /api/commands HTTP/1.1" 200 OK
 INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0018s
-INFO:     180.222.139.202:61669 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:51503 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
+INFO:     180.222.139.202:56058 - "GET /api/devices HTTP/1.1" 200 OK
+INFO:main:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
+INFO:main:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
+INFO:main:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
+INFO:main:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0033s
+INFO:     180.222.139.202:47538 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
+INFO:main:[Request] GET http://localhost:8080/api/devices from 127.0.0.1
 INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:56850 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:56850 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/ from 180.222.139.202
-INFO:main:[Response] GET / - Status: 200 - Time: 0.0013s
-INFO:     180.222.139.202:61334 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40028 - "GET /api/devices HTTP/1.1" 200 OK
+INFO:main:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
+INFO:main:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
+INFO:main:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
+INFO:main:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0038s
+INFO:     180.222.139.202:47539 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
 INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
 INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:61334 - "GET /api/devices HTTP/1.1" 200 OK
+INFO:     180.222.139.202:49672 - "GET /api/devices HTTP/1.1" 200 OK
 INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:54830 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/attendance?limit=20 from 180.222.139.202
-INFO:main:[Response] GET /api/attendance - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:63906 - "GET /api/attendance?limit=20 HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/favicon.ico from 180.222.139.202
-INFO:main:[Response] GET /favicon.ico - Status: 404 - Time: 0.0006s
-INFO:     180.222.139.202:63906 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0008s
+INFO:     180.222.139.202:56262 - "GET /api/commands HTTP/1.1" 200 OK
+INFO:main:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
+INFO:main:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
+INFO:main:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
+INFO:main:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0037s
+INFO:     180.222.139.202:47540 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
+INFO:main:[Request] GET http://128.199.24.193:8080/ from 180.222.139.202
+INFO:main:[Response] GET / - Status: 200 - Time: 0.0044s
+INFO:     180.222.139.202:55539 - "GET / HTTP/1.1" 200 OK
 INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0016s
-INFO:     180.222.139.202:54022 - "GET /api/devices HTTP/1.1" 200 OK
 INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:54022 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/ from 204.76.203.219
-INFO:main:[Response] GET / - Status: 200 - Time: 0.0008s
-INFO:     204.76.203.219:36388 - "GET / HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0037s
-INFO:     180.222.139.202:62137 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0032s
-INFO:     180.222.139.202:63081 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
+INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0024s
+INFO:     180.222.139.202:55539 - "GET /api/devices HTTP/1.1" 200 OK
 INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0021s
-INFO:     180.222.139.202:49999 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0017s
-INFO:     180.222.139.202:52129 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0016s
-INFO:     180.222.139.202:63030 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0013s
-INFO:     180.222.139.202:49814 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:61502 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:52811 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/ from 180.222.139.202
-INFO:main:[Response] GET / - Status: 200 - Time: 0.0015s
-INFO:     180.222.139.202:52811 - "GET / HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0009s
-INFO:     180.222.139.202:55085 - "GET /api/commands HTTP/1.1" 200 OK
+INFO:     180.222.139.202:56347 - "GET /api/commands HTTP/1.1" 200 OK
 INFO:main:[Request] GET http://128.199.24.193:8080/api/attendance?limit=20 from 180.222.139.202
-INFO:main:[Response] GET /api/attendance - Status: 200 - Time: 0.0009s
-INFO:     180.222.139.202:62634 - "GET /api/attendance?limit=20 HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0017s
-INFO:     180.222.139.202:55085 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0022s
-INFO:     180.222.139.202:49670 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0013s
-INFO:     180.222.139.202:51682 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:56452 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:49958 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:61003 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0013s
-INFO:     180.222.139.202:61003 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:50060 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:53881 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:main:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:main:[Response] GET /api/commands - Status: 200 - Time: 0.0023s
-INFO:     180.222.139.202:50926 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:main:[Response] GET /api/devices - Status: 200 - Time: 0.0025s
-INFO:     180.222.139.202:64112 - "GET /api/devices HTTP/1.1" 200 OK
+INFO:main:[Response] GET /api/attendance - Status: 200 - Time: 0.0011s
+INFO:     180.222.139.202:53115 - "GET /api/attendance?limit=20 HTTP/1.1" 200 OK
+INFO:main:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
+INFO:main:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
+INFO:main:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
+INFO:main:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0045s
+INFO:     180.222.139.202:47541 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
 INFO:     Shutting down
 INFO:     Waiting for application shutdown.
 INFO:     Application shutdown complete.
-INFO:     Finished server process [40351]
-INFO:     Stopping reloader process [39634]
+INFO:     Finished server process [80515]
+INFO:     Stopping reloader process [80511]
