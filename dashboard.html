@@ -63,6 +63,20 @@
             }
         }
 
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .spinning {
+            animation: spin 1s linear infinite;
+        }
+
         .glass-effect {
             backdrop-filter: blur(16px);
             background: rgba(255, 255, 255, 0.9);
@@ -606,13 +620,31 @@
             initializeUI();
         });
 
-        refreshDevicesBtn.addEventListener('click', loadDevices);
-        refreshCommandsBtn.addEventListener('click', loadCommands);
+        refreshDevicesBtn.addEventListener('click', () => {
+            const icon = refreshDevicesBtn.querySelector('i');
+            icon.classList.add('spinning');
+            loadDevices().finally(() => {
+                icon.classList.remove('spinning');
+            });
+        });
+        refreshCommandsBtn.addEventListener('click', () => {
+            const icon = refreshCommandsBtn.querySelector('i');
+            icon.classList.add('spinning');
+            loadCommands().finally(() => {
+                icon.classList.remove('spinning');
+            });
+        });
 
         // Add refresh attendance button listener
         const refreshAttendanceBtn = document.getElementById('refreshAttendance');
         if (refreshAttendanceBtn) {
-            refreshAttendanceBtn.addEventListener('click', loadAttendanceLogs);
+            refreshAttendanceBtn.addEventListener('click', () => {
+                const icon = refreshAttendanceBtn.querySelector('i');
+                icon.classList.add('spinning');
+                loadAttendanceLogs().finally(() => {
+                    icon.classList.remove('spinning');
+                });
+            });
         }
 
         closeModalBtn.addEventListener('click', () => {
@@ -648,30 +680,29 @@
         }
 
         function updateStats() {
-            // Update device count
-            const deviceCount = document.querySelectorAll('#devicesTableBody tr').length;
+            // Update device count (exclude empty state rows)
+            const deviceRows = document.querySelectorAll('#devicesTableBody tr');
+            const deviceCount = Array.from(deviceRows).filter(row => {
+                // Exclude rows with colspan (empty state messages)
+                return !row.querySelector('td[colspan]');
+            }).length;
             document.getElementById('deviceCount').textContent = deviceCount;
 
-            // Update command count (pending/queued commands)
+            // Update command count (total commands, exclude empty state rows)
             const commandRows = document.querySelectorAll('#commandsTableBody tr');
-            const activeCommands = Array.from(commandRows).filter(row => {
-                const statusCell = row.querySelector('td:nth-child(3) span');
-                return statusCell && ['queued', 'sent'].includes(statusCell.textContent.toLowerCase());
+            const commandCount = Array.from(commandRows).filter(row => {
+                // Exclude rows with colspan (empty state messages)
+                return !row.querySelector('td[colspan]');
             }).length;
-            document.getElementById('commandCount').textContent = activeCommands;
+            document.getElementById('commandCount').textContent = commandCount;
 
-            // Update today's log count
-            const today = new Date().toDateString();
+            // Update attendance log count (total logs, exclude empty state rows)
             const logRows = document.querySelectorAll('#attendanceTableBody tr');
-            const todayLogs = Array.from(logRows).filter(row => {
-                const timeCell = row.querySelector('td:nth-child(3)');
-                if (timeCell) {
-                    const logDate = new Date(timeCell.textContent).toDateString();
-                    return logDate === today;
-                }
-                return false;
+            const logCount = Array.from(logRows).filter(row => {
+                // Exclude rows with colspan (empty state messages)
+                return !row.querySelector('td[colspan]');
             }).length;
-            document.getElementById('logCount').textContent = todayLogs;
+            document.getElementById('logCount').textContent = logCount;
         }
 
         async function loadDevices() {
