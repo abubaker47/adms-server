@@ -271,8 +271,9 @@ async def get_request(request: Request):
         )
     else:
         logger.info(f"[GetRequest] No pending commands for device {sn} from {ip}")
+        # Enable realtime attendance reporting by sending REALTIME=1 option
         return PlainTextResponse(
-            "OK", 
+            "GET OPTION FROM: REALTIME=1\n", 
             headers={
                 "Content-Type": "text/plain; charset=utf-8",
                 "Cache-Control": "no-store"
@@ -534,17 +535,24 @@ async def receive_data(request: Request):
             )
     
     # Process attendance logs
-    if "TRANS RECORDS" in body_str:
+    # Handle both batch mode (with "TRANS RECORDS" header) and realtime mode (individual records)
+    if body_str:
         lines = body_str.split("\n")
         conn = sqlite3.connect('adms.db')
         cursor = conn.cursor()
         
-        logger.info(f"[CData-ATTENDANCE] Processing {len(lines)} lines of attendance data from device {sn}")
+        records_processed = 0
         
         for line in lines:
+            line = line.strip()
+            if not line:  # Skip empty lines
+                continue
+            
+            # Check if line starts with TRANS (batch mode with TRANS prefix)
             if line.startswith("TRANS") and len(line.split("\t")) >= 5:
                 parts = line.split("\t")
                 try:
+                    # TRANS format: TRANS\tUSER_ID\tTIMESTAMP\tVERIFY_MODE\tSTATUS
                     user_id = parts[1]
                     timestamp = parts[2]
                     verify_mode = int(parts[3])
@@ -555,10 +563,51 @@ async def receive_data(request: Request):
                         INSERT INTO attendance_logs (device_sn, user_id, timestamp, verify_mode, status)
                         VALUES (?, ?, ?, ?, ?)
                     ''', (sn, user_id, timestamp, verify_mode, status))
+                    
+                    records_processed += 1
+                    logger.info(f"[CData-ATTENDANCE] Recorded attendance: User {user_id} at {timestamp} from device {sn}")
                 except Exception as e:
-                    logger.error(f"[CData-ATTENDANCE] Error parsing attendance record: {e}")
+                    logger.error(f"[CData-ATTENDANCE] Error parsing TRANS record '{line}': {e}")
+            else:
+                # Try to parse as raw realtime data (tab or whitespace separated)
+                # Format: USER_ID\tTIMESTAMP\tVERIFY_MODE\tSTATUS\t...
+                # Split by both tabs and multiple spaces
+                parts = line.split()  # Split by any whitespace
+                
+                # Need at least USER_ID, TIMESTAMP, VERIFY_MODE, STATUS (4 fields minimum)
+                if len(parts) >= 4:
+                    try:
+                        user_id = parts[0]
+                        # Timestamp could be split into date and time (parts[1] and parts[2])
+                        if len(parts) >= 5 and ':' in parts[2]:
+                            # Format: USER_ID DATE TIME VERIFY_MODE STATUS ...
+                            timestamp = f"{parts[1]} {parts[2]}"
+                            verify_mode = int(parts[3])
+                            status = int(parts[4])
+                        else:
+                            # Format: USER_ID TIMESTAMP VERIFY_MODE STATUS ...
+                            timestamp = parts[1]
+                            verify_mode = int(parts[2])
+                            status = int(parts[3])
+                        
+                        # Insert attendance log
+                        cursor.execute('''
+                            INSERT INTO attendance_logs (device_sn, user_id, timestamp, verify_mode, status)
+                            VALUES (?, ?, ?, ?, ?)
+                        ''', (sn, user_id, timestamp, verify_mode, status))
+                        
+                        records_processed += 1
+                        logger.info(f"[CData-ATTENDANCE] Recorded realtime attendance: User {user_id} at {timestamp} from device {sn}")
+                    except Exception as e:
+                        logger.error(f"[CData-ATTENDANCE] Error parsing realtime record '{line}': {e}")
+                        logger.error(f"[CData-ATTENDANCE] Parts: {parts}")
         
-        conn.commit()
+        if records_processed > 0:
+            conn.commit()
+            logger.info(f"[CData-ATTENDANCE] Successfully processed {records_processed} attendance records from device {sn}")
+        else:
+            logger.warning(f"[CData-ATTENDANCE] No valid attendance records found in data from device {sn}")
+        
         conn.close()
     
     # After processing attendance, check for more commands to send
