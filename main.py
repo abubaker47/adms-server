@@ -838,7 +838,7 @@ async def get_attendance_logs(limit: int = 100):
     cursor.execute('''
         SELECT device_sn, user_id, timestamp, verify_mode, status, created_at
         FROM attendance_logs
-        ORDER BY created_at DESC
+        ORDER BY timestamp DESC, created_at DESC
         LIMIT ?
     ''', (limit,))
     

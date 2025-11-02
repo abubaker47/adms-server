@@ -1,386 +1,103 @@
-nohup: ignoring input
-INFO:     Started server process [158069]
+INFO:__main__:[Migration] Adding unique constraint to attendance_logs table...
+INFO:__main__:[Migration] Successfully migrated attendance_logs table
+INFO:     Started server process [166772]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
-INFO:__main__:[Request] GET http://localhost:8080/api/attendance?limit=5 from 127.0.0.1
-INFO:__main__:[Response] GET /api/attendance - Status: 200 - Time: 0.0017s
-INFO:     127.0.0.1:59258 - "GET /api/attendance?limit=5 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0025s
-INFO:     180.222.139.202:64268 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0018s
-INFO:     180.222.139.202:49317 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0039s
-INFO:     180.222.139.202:57082 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
 INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
 INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
 INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
 INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0040s
-INFO:     180.222.139.202:57083 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
+INFO:     180.222.139.202:57189 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
+INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0011s
+INFO:     180.222.139.202:56885 - "GET /api/devices HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
+INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0013s
+INFO:     180.222.139.202:55121 - "GET /api/commands HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
+INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
+INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
+INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0069s
+INFO:     180.222.139.202:57190 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
+INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0015s
+INFO:     180.222.139.202:55224 - "GET /api/devices HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
+INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0012s
+INFO:     180.222.139.202:55747 - "GET /api/commands HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
+INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
+INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
+INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0036s
+INFO:     180.222.139.202:57191 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
+INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0017s
+INFO:     180.222.139.202:49864 - "GET /api/devices HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
+INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0012s
+INFO:     180.222.139.202:54391 - "GET /api/commands HTTP/1.1" 200 OK
+WARNING:  Invalid HTTP request received.
+INFO:__main__:[Request] GET http://128.199.24.193:8080/favicon.ico from 216.180.246.135
+INFO:__main__:[Response] GET /favicon.ico - Status: 404 - Time: 0.0005s
+INFO:     216.180.246.135:35192 - "GET /favicon.ico HTTP/1.1" 404 Not Found
 INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
 INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
 INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
 INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0038s
-INFO:     180.222.139.202:57084 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:55962 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0009s
-INFO:     180.222.139.202:63611 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0031s
-INFO:     180.222.139.202:57085 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://localhost:8080/api/attendance?limit=10 from 127.0.0.1
-INFO:__main__:[Response] GET /api/attendance - Status: 200 - Time: 0.0012s
-INFO:     127.0.0.1:35166 - "GET /api/attendance?limit=10 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0062s
-INFO:     180.222.139.202:57086 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:53868 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:52294 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://localhost:8080/api/attendance?limit=10 from 127.0.0.1
-INFO:__main__:[Response] GET /api/attendance - Status: 200 - Time: 0.0020s
-INFO:     127.0.0.1:46684 - "GET /api/attendance?limit=10 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0046s
-INFO:     180.222.139.202:57087 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0032s
-INFO:     180.222.139.202:57088 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://localhost:8080/api/attendance?limit=10 from 127.0.0.1
-INFO:__main__:[Response] GET /api/attendance - Status: 200 - Time: 0.0012s
-INFO:     127.0.0.1:53004 - "GET /api/attendance?limit=10 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0023s
-INFO:     180.222.139.202:59803 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:49941 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0030s
-INFO:     180.222.139.202:57089 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:55274 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:53341 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0037s
-INFO:     180.222.139.202:57090 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
+INFO:     180.222.139.202:57192 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
 INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
 INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:54824 - "GET /api/devices HTTP/1.1" 200 OK
+INFO:     180.222.139.202:52828 - "GET /api/devices HTTP/1.1" 200 OK
 INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
 INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:56964 - "GET /api/commands HTTP/1.1" 200 OK
+INFO:     180.222.139.202:60571 - "GET /api/commands HTTP/1.1" 200 OK
 INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
 INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
 INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0031s
-INFO:     180.222.139.202:57091 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://localhost:8080/api/attendance?limit=1 from 127.0.0.1
-INFO:__main__:[Response] GET /api/attendance - Status: 200 - Time: 0.0011s
-INFO:     127.0.0.1:56312 - "GET /api/attendance?limit=1 HTTP/1.1" 200 OK
+INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0040s
+INFO:     180.222.139.202:57193 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
 INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
 INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
 INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0057s
-INFO:     180.222.139.202:57092 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0015s
-INFO:     180.222.139.202:51442 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0016s
-INFO:     180.222.139.202:53203 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0037s
-INFO:     180.222.139.202:49377 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0017s
-INFO:     180.222.139.202:53834 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://localhost:8080/api/attendance?limit=5 from 127.0.0.1
-INFO:__main__:[Response] GET /api/attendance - Status: 200 - Time: 0.0010s
-INFO:     127.0.0.1:52622 - "GET /api/attendance?limit=5 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0074s
-INFO:     180.222.139.202:57093 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0019s
-INFO:     180.222.139.202:56991 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0013s
-INFO:     180.222.139.202:63218 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0032s
-INFO:     180.222.139.202:57094 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0048s
-INFO:     180.222.139.202:57095 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0046s
-INFO:     180.222.139.202:57096 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:62168 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:61148 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0034s
-INFO:     180.222.139.202:57097 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://localhost:8080/api/employees from 127.0.0.1
-INFO:__main__:[Response] GET /api/employees - Status: 200 - Time: 0.0013s
-INFO:     127.0.0.1:53124 - "GET /api/employees HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://localhost:8080/api/attendance?limit=5 from 127.0.0.1
-INFO:__main__:[Response] GET /api/attendance - Status: 200 - Time: 0.0035s
-INFO:     127.0.0.1:53132 - "GET /api/attendance?limit=5 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://localhost:8080/api/employees from 127.0.0.1
-INFO:__main__:[Response] GET /api/employees - Status: 200 - Time: 0.0011s
-INFO:     127.0.0.1:41388 - "GET /api/employees HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://localhost:8080/api/attendance?limit=5 from 127.0.0.1
-INFO:__main__:[Response] GET /api/attendance - Status: 200 - Time: 0.0013s
-INFO:     127.0.0.1:41396 - "GET /api/attendance?limit=5 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0032s
-INFO:     180.222.139.202:57098 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0021s
-INFO:     180.222.139.202:54024 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0016s
-INFO:     180.222.139.202:63334 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/ from 180.222.139.202
-INFO:__main__:[Response] GET / - Status: 200 - Time: 0.0043s
-INFO:     180.222.139.202:63124 - "GET / HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:63124 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:53579 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/attendance?limit=20 from 180.222.139.202
-INFO:__main__:[Response] GET /api/attendance - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:63124 - "GET /api/attendance?limit=20 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/favicon.ico from 180.222.139.202
-INFO:__main__:[Response] GET /favicon.ico - Status: 404 - Time: 0.0005s
-INFO:     180.222.139.202:63124 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0035s
-INFO:     180.222.139.202:57099 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:50553 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0020s
-INFO:     180.222.139.202:59024 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] POST http://128.199.24.193:8080/iclock/cdata?SN=JYM6244400083&table=ATTLOG&Stamp=9999 from 180.222.139.202
-INFO:__main__:[ZKTeco-CData] Attendance data received from 180.222.139.202 - Query params: {'SN': 'JYM6244400083', 'table': 'ATTLOG', 'Stamp': '9999'}
-INFO:__main__:[CData] Device JYM6244400083 sent data from 180.222.139.202 (Model: None, Firmware: None)
-INFO:__main__:[CData-POST] Received data from device JYM6244400083: 1	2025-11-02 14:49:05	0	1	0	0	0	0	0	0	
-...
-INFO:__main__:[CData-ATTENDANCE] Recorded realtime attendance: User 1 at 2025-11-02 14:49:05 from device JYM6244400083
-INFO:__main__:[CData-ATTENDANCE] Successfully processed 1 attendance records from device JYM6244400083
-INFO:__main__:[CData-POST] No pending commands for device JYM6244400083 from 180.222.139.202 after attendance processing
-INFO:__main__:[Response] POST /iclock/cdata - Status: 200 - Time: 0.0082s
-INFO:     180.222.139.202:57100 - "POST /iclock/cdata?SN=JYM6244400083&table=ATTLOG&Stamp=9999 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083&INFO=ZMM720-NF-Ver1.2.7,1,1,31,80.80.80.3,10,12,12,0,111,0,0,0 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083', 'INFO': 'ZMM720-NF-Ver1.2.7,1,1,31,80.80.80.3,10,12,12,0,111,0,0,0'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0037s
-INFO:     180.222.139.202:57101 - "GET /iclock/getrequest?SN=JYM6244400083&INFO=ZMM720-NF-Ver1.2.7,1,1,31,80.80.80.3,10,12,12,0,111,0,0,0 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:59689 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0011s
-INFO:     180.222.139.202:51297 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0039s
-INFO:     180.222.139.202:57102 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/ from 180.222.139.202
-INFO:__main__:[Response] GET / - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:64846 - "GET / HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0013s
-INFO:     180.222.139.202:64846 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:60063 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/attendance?limit=20 from 180.222.139.202
-INFO:__main__:[Response] GET /api/attendance - Status: 200 - Time: 0.0013s
-INFO:     180.222.139.202:64846 - "GET /api/attendance?limit=20 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0048s
-INFO:     180.222.139.202:57103 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:54713 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0015s
-INFO:     180.222.139.202:56135 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0099s
-INFO:     180.222.139.202:57104 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0018s
-INFO:     180.222.139.202:60991 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:57403 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0051s
-INFO:     180.222.139.202:57105 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0046s
-INFO:     180.222.139.202:50447 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0029s
-INFO:     180.222.139.202:58318 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0055s
-INFO:     180.222.139.202:57106 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0025s
-INFO:     180.222.139.202:54837 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:49674 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0043s
-INFO:     180.222.139.202:57107 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
+INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0042s
+INFO:     180.222.139.202:57194 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
 INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
 INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:60537 - "GET /api/devices HTTP/1.1" 200 OK
+INFO:     180.222.139.202:62015 - "GET /api/devices HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
+INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0015s
+INFO:     180.222.139.202:60960 - "GET /api/commands HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
+INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
+INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
+INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0089s
+INFO:     180.222.139.202:57195 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
+INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
+INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
+INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0045s
+INFO:     180.222.139.202:57196 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
 INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
 INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:51901 - "GET /api/commands HTTP/1.1" 200 OK
+INFO:     180.222.139.202:55963 - "GET /api/commands HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
+INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0011s
+INFO:     180.222.139.202:59021 - "GET /api/devices HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/ from 180.222.139.202
+INFO:__main__:[Response] GET / - Status: 200 - Time: 0.0055s
+INFO:     180.222.139.202:64206 - "GET / HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
+INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0015s
+INFO:     180.222.139.202:59419 - "GET /api/commands HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
+INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0010s
+INFO:     180.222.139.202:64206 - "GET /api/devices HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/api/attendance?limit=20 from 180.222.139.202
+INFO:__main__:[Response] GET /api/attendance - Status: 200 - Time: 0.0017s
+INFO:     180.222.139.202:58775 - "GET /api/attendance?limit=20 HTTP/1.1" 200 OK
 INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
 INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
 INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
 INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0046s
-INFO:     180.222.139.202:57108 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0021s
-INFO:     180.222.139.202:55962 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0014s
-INFO:     180.222.139.202:62234 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0035s
-INFO:     180.222.139.202:57109 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0016s
-INFO:     180.222.139.202:61232 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0016s
-INFO:     180.222.139.202:55465 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0033s
-INFO:     180.222.139.202:57110 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0033s
-INFO:     180.222.139.202:57111 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0023s
-INFO:     180.222.139.202:58334 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0017s
-INFO:     180.222.139.202:62165 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0020s
-INFO:     180.222.139.202:53385 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:52718 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0169s
-INFO:     180.222.139.202:57112 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0012s
-INFO:     180.222.139.202:54476 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0013s
-INFO:     180.222.139.202:54647 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0039s
-INFO:     180.222.139.202:57113 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0010s
-INFO:     180.222.139.202:50175 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0013s
-INFO:     180.222.139.202:59316 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/iclock/getrequest?SN=JYM6244400083 from 180.222.139.202
-INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query params: {'SN': 'JYM6244400083'}
-INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
-INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0041s
-INFO:     180.222.139.202:57114 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 180.222.139.202
-INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 180.222.139.202
-INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0040s
-INFO:     180.222.139.202:57717 - "GET /api/devices HTTP/1.1" 200 OK
-INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0024s
-INFO:     180.222.139.202:58028 - "GET /api/commands HTTP/1.1" 200 OK
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [158069]
+INFO:     180.222.139.202:57197 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
