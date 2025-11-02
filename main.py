@@ -34,6 +34,72 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Database migration function
+def migrate_database():
+    """Migrate existing database to add unique constraints and indexes"""
+    conn = sqlite3.connect('adms.db')
+    cursor = conn.cursor()
+    
+    try:
+        # Check if the attendance_logs table needs migration
+        cursor.execute("PRAGMA table_info(attendance_logs)")
+        columns = cursor.fetchall()
+        
+        # Check if UNIQUE constraint exists by checking indexes
+        cursor.execute("PRAGMA index_list(attendance_logs)")
+        indexes = cursor.fetchall()
+        
+        # Check if unique constraint already exists
+        has_unique_constraint = False
+        for index in indexes:
+            cursor.execute(f"PRAGMA index_info({index[1]})")
+            index_info = cursor.fetchall()
+            if len(index_info) == 3:  # device_sn, user_id, timestamp
+                has_unique_constraint = True
+                break
+        
+        if not has_unique_constraint:
+            logger.info("[Migration] Adding unique constraint to attendance_logs table...")
+            
+            # Create new table with unique constraint
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS attendance_logs_new (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    device_sn TEXT NOT NULL,
+                    user_id TEXT NOT NULL,
+                    timestamp TIMESTAMP NOT NULL,
+                    verify_mode INTEGER,
+                    status INTEGER,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (device_sn) REFERENCES devices (serial_number),
+                    UNIQUE(device_sn, user_id, timestamp)
+                )
+            ''')
+            
+            # Copy data from old table to new table, removing duplicates
+            cursor.execute('''
+                INSERT OR IGNORE INTO attendance_logs_new 
+                (id, device_sn, user_id, timestamp, verify_mode, status, created_at)
+                SELECT id, device_sn, user_id, timestamp, verify_mode, status, created_at
+                FROM attendance_logs
+                ORDER BY created_at ASC
+            ''')
+            
+            # Drop old table
+            cursor.execute('DROP TABLE IF EXISTS attendance_logs')
+            
+            # Rename new table
+            cursor.execute('ALTER TABLE attendance_logs_new RENAME TO attendance_logs')
+            
+            logger.info("[Migration] Successfully migrated attendance_logs table")
+        
+        conn.commit()
+    except Exception as e:
+        logger.error(f"[Migration] Error during database migration: {e}")
+        conn.rollback()
+    finally:
+        conn.close()
+
 # Database setup
 def init_db():
     conn = sqlite3.connect('adms.db')
@@ -76,8 +142,20 @@ def init_db():
             verify_mode INTEGER,
             status INTEGER,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (device_sn) REFERENCES devices (serial_number)
+            FOREIGN KEY (device_sn) REFERENCES devices (serial_number),
+            UNIQUE(device_sn, user_id, timestamp)
         )
+    ''')
+    
+    # Create index for faster queries on attendance logs
+    cursor.execute('''
+        CREATE INDEX IF NOT EXISTS idx_attendance_device_timestamp 
+        ON attendance_logs (device_sn, timestamp DESC)
+    ''')
+    
+    cursor.execute('''
+        CREATE INDEX IF NOT EXISTS idx_attendance_user 
+        ON attendance_logs (user_id, timestamp DESC)
     ''')
     
     conn.commit()
@@ -558,14 +636,17 @@ async def receive_data(request: Request):
                     verify_mode = int(parts[3])
                     status = int(parts[4])
                     
-                    # Insert attendance log
+                    # Insert attendance log (ignore duplicates based on unique constraint)
                     cursor.execute('''
-                        INSERT INTO attendance_logs (device_sn, user_id, timestamp, verify_mode, status)
+                        INSERT OR IGNORE INTO attendance_logs (device_sn, user_id, timestamp, verify_mode, status)
                         VALUES (?, ?, ?, ?, ?)
                     ''', (sn, user_id, timestamp, verify_mode, status))
                     
-                    records_processed += 1
-                    logger.info(f"[CData-ATTENDANCE] Recorded attendance: User {user_id} at {timestamp} from device {sn}")
+                    if cursor.rowcount > 0:
+                        records_processed += 1
+                        logger.info(f"[CData-ATTENDANCE] Recorded attendance: User {user_id} at {timestamp} from device {sn}")
+                    else:
+                        logger.debug(f"[CData-ATTENDANCE] Skipped duplicate: User {user_id} at {timestamp} from device {sn}")
                 except Exception as e:
                     logger.error(f"[CData-ATTENDANCE] Error parsing TRANS record '{line}': {e}")
             else:
@@ -590,14 +671,17 @@ async def receive_data(request: Request):
                             verify_mode = int(parts[2])
                             status = int(parts[3])
                         
-                        # Insert attendance log
+                        # Insert attendance log (ignore duplicates based on unique constraint)
                         cursor.execute('''
-                            INSERT INTO attendance_logs (device_sn, user_id, timestamp, verify_mode, status)
+                            INSERT OR IGNORE INTO attendance_logs (device_sn, user_id, timestamp, verify_mode, status)
                             VALUES (?, ?, ?, ?, ?)
                         ''', (sn, user_id, timestamp, verify_mode, status))
                         
-                        records_processed += 1
-                        logger.info(f"[CData-ATTENDANCE] Recorded realtime attendance: User {user_id} at {timestamp} from device {sn}")
+                        if cursor.rowcount > 0:
+                            records_processed += 1
+                            logger.info(f"[CData-ATTENDANCE] Recorded realtime attendance: User {user_id} at {timestamp} from device {sn}")
+                        else:
+                            logger.debug(f"[CData-ATTENDANCE] Skipped duplicate realtime: User {user_id} at {timestamp} from device {sn}")
                     except Exception as e:
                         logger.error(f"[CData-ATTENDANCE] Error parsing realtime record '{line}': {e}")
                         logger.error(f"[CData-ATTENDANCE] Parts: {parts}")
@@ -882,6 +966,7 @@ async def root():
     return FileResponse('dashboard.html')
 
 # Initialize database on startup
+migrate_database()
 init_db()
 
 if __name__ == "__main__":

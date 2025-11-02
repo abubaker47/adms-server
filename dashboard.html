@@ -666,8 +666,15 @@
         // Command buttons event delegation
         document.querySelectorAll('.command-btn').forEach(button => {
             button.addEventListener('click', async (e) => {
-                const command = e.target.getAttribute('data-command');
-                await sendCommand(selectedDeviceSN, command);
+                const command = button.getAttribute('data-command');
+                
+                // Special handling for "Get Logs" command
+                if (command === 'DATA QUERY ATTLOG') {
+                    await handleGetLogsCommand(selectedDeviceSN);
+                } else {
+                    await sendCommand(selectedDeviceSN, command);
+                }
+                
                 commandModal.classList.add('hidden');
                 loadCommands();
             });
@@ -1010,6 +1017,45 @@
             } catch (error) {
                 console.error('Error sending command:', error);
                 showToast(`Failed to send command: ${error.message}`, 'error');
+            }
+        }
+
+        async function handleGetLogsCommand(deviceSN) {
+            try {
+                // Send the command to retrieve logs
+                const response = await fetch(`${API_BASE}/devices/${deviceSN}/command`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ command: 'DATA QUERY ATTLOG' }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to send command: ${response.statusText}`);
+                }
+
+                // Check if device is online
+                const devicesResponse = await fetch(`${API_BASE}/devices`);
+                const devices = await devicesResponse.json();
+                const device = devices.find(d => d.serial_number === deviceSN);
+
+                if (device && device.status === 'online') {
+                    showToast(`Retrieving attendance logs from device ${deviceSN}...`, 'info');
+                    
+                    // Wait for the device to process and send the logs (5 seconds)
+                    // Then auto-refresh the attendance logs table
+                    setTimeout(async () => {
+                        await loadAttendanceLogs();
+                        showToast('Attendance logs updated! Check the Attendance tab.', 'success');
+                    }, 5000);
+                } else {
+                    showToast(`Command queued for offline device ${deviceSN}. Logs will be retrieved when device comes online.`, 'info');
+                }
+
+            } catch (error) {
+                console.error('Error retrieving logs:', error);
+                showToast(`Failed to retrieve logs: ${error.message}`, 'error');
             }
         }
 
