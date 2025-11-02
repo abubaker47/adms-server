@@ -80,21 +80,6 @@ def init_db():
         )
     ''')
     
-    # Create employees table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS employees (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            employee_id TEXT UNIQUE NOT NULL,
-            name TEXT NOT NULL,
-            department TEXT,
-            position TEXT,
-            email TEXT,
-            phone TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
     conn.commit()
     conn.close()
 
@@ -104,14 +89,6 @@ class Device(BaseModel):
     ip_address: str
     model: Optional[str] = None
     firmware_version: Optional[str] = None
-
-class Employee(BaseModel):
-    employee_id: str
-    name: str
-    department: Optional[str] = None
-    position: Optional[str] = None
-    email: Optional[str] = None
-    phone: Optional[str] = None
 
 class CommandRequest(BaseModel):
     command: str
@@ -437,92 +414,6 @@ async def receive_fdata(request: Request):
     
     return PlainTextResponse("OK", headers={"Content-Type": "text/plain"})
 
-@app.post("/iclock/userdata", response_class=PlainTextResponse)
-@app.get("/iclock/userdata", response_class=PlainTextResponse)
-async def receive_user_data(request: Request):
-    """Handle user/employee data from ZKTeco device"""
-    sn = request.query_params.get("SN")
-    ip = request.client.host
-    
-    logger.info(f"[ZKTeco-UserData] User data received from {ip} - Query params: {dict(request.query_params)}")
-    
-    if not sn:
-        logger.error(f"[ZKTeco-UserData] Missing SN parameter from {ip}")
-        raise HTTPException(status_code=400, detail="SN parameter required")
-    
-    # Register or update device
-    register_or_update_device(sn, ip)
-    
-    # For POST requests, parse user data
-    if request.method == "POST":
-        body = await request.body()
-        body_str = body.decode('utf-8')
-        
-        logger.info(f"[UserData-POST] Received user data from device {sn}: {body_str[:200]}...")
-        
-        # Parse user data
-        # Format: USER PIN=<id>\tName=<name>\tPri=<privilege>\tPasswd=<password>\tCard=<card>\tGrp=<group>\tTZ=<timezone>
-        if body_str:
-            lines = body_str.split("\n")
-            conn = sqlite3.connect('adms.db')
-            cursor = conn.cursor()
-            
-            users_processed = 0
-            
-            for line in lines:
-                line = line.strip()
-                if not line or line.startswith("GET") or line.startswith("POST"):
-                    continue
-                
-                # Parse USER line
-                if line.startswith("USER"):
-                    try:
-                        # Extract fields from the line
-                        parts = line.split("\t")
-                        user_data = {}
-                        
-                        for part in parts:
-                            if "=" in part:
-                                key, value = part.split("=", 1)
-                                user_data[key.strip()] = value.strip()
-                        
-                        # Get user ID and name
-                        employee_id = user_data.get("PIN", "")
-                        name = user_data.get("Name", f"User {employee_id}")
-                        
-                        if employee_id:
-                            # Check if employee exists
-                            cursor.execute('SELECT id FROM employees WHERE employee_id = ?', (employee_id,))
-                            existing = cursor.fetchone()
-                            
-                            if existing:
-                                # Update existing employee
-                                cursor.execute('''
-                                    UPDATE employees 
-                                    SET name = ?, updated_at = ?
-                                    WHERE employee_id = ?
-                                ''', (name, datetime.datetime.now().isoformat(), employee_id))
-                                logger.info(f"[UserData] Updated employee: {name} (ID: {employee_id})")
-                            else:
-                                # Insert new employee
-                                cursor.execute('''
-                                    INSERT INTO employees (employee_id, name)
-                                    VALUES (?, ?)
-                                ''', (employee_id, name))
-                                logger.info(f"[UserData] Added new employee: {name} (ID: {employee_id})")
-                            
-                            users_processed += 1
-                    except Exception as e:
-                        logger.error(f"[UserData] Error parsing user record '{line}': {e}")
-            
-            if users_processed > 0:
-                conn.commit()
-                logger.info(f"[UserData] Successfully processed {users_processed} user records from device {sn}")
-            
-            conn.close()
-    
-    return PlainTextResponse("OK", headers={"Content-Type": "text/plain; charset=utf-8"})
-
 @app.post("/iclock/cdata", response_class=PlainTextResponse)
 @app.get("/iclock/cdata", response_class=PlainTextResponse)
 async def receive_data(request: Request):
@@ -643,7 +534,7 @@ async def receive_data(request: Request):
                 }
             )
     
-    # Process attendance logs and user data
+    # Process attendance logs
     # Handle both batch mode (with "TRANS RECORDS" header) and realtime mode (individual records)
     if body_str:
         lines = body_str.split("\n")
@@ -651,59 +542,14 @@ async def receive_data(request: Request):
         cursor = conn.cursor()
         
         records_processed = 0
-        users_processed = 0
         
         for line in lines:
             line = line.strip()
             if not line:  # Skip empty lines
                 continue
             
-            # Check for USER data (employee information from device)
-            if line.startswith("USER"):
-                try:
-                    # Extract fields from the USER line
-                    # Format: USER PIN=<id>\tName=<name>\tPri=<privilege>\tPasswd=<password>\tCard=<card>
-                    # Split by both tabs and multiple spaces using regex
-                    import re
-                    parts = re.split(r'\s+', line)
-                    user_data = {}
-                    
-                    for part in parts:
-                        if "=" in part:
-                            key, value = part.split("=", 1)
-                            user_data[key.strip()] = value.strip()
-                    
-                    # Get user ID and name
-                    employee_id = user_data.get("PIN", "")
-                    name = user_data.get("Name", f"User {employee_id}")
-                    
-                    if employee_id:
-                        # Check if employee exists
-                        cursor.execute('SELECT id FROM employees WHERE employee_id = ?', (employee_id,))
-                        existing = cursor.fetchone()
-                        
-                        if existing:
-                            # Update existing employee
-                            cursor.execute('''
-                                UPDATE employees 
-                                SET name = ?, updated_at = ?
-                                WHERE employee_id = ?
-                            ''', (name, datetime.datetime.now().isoformat(), employee_id))
-                            logger.info(f"[CData-USER] Updated employee: {name} (ID: {employee_id})")
-                        else:
-                            # Insert new employee
-                            cursor.execute('''
-                                INSERT INTO employees (employee_id, name)
-                                VALUES (?, ?)
-                            ''', (employee_id, name))
-                            logger.info(f"[CData-USER] Added new employee: {name} (ID: {employee_id})")
-                        
-                        users_processed += 1
-                except Exception as e:
-                    logger.error(f"[CData-USER] Error parsing user record '{line}': {e}")
-            
             # Check if line starts with TRANS (batch mode with TRANS prefix)
-            elif line.startswith("TRANS") and len(line.split("\t")) >= 5:
+            if line.startswith("TRANS") and len(line.split("\t")) >= 5:
                 parts = line.split("\t")
                 try:
                     # TRANS format: TRANS\tUSER_ID\tTIMESTAMP\tVERIFY_MODE\tSTATUS
@@ -756,14 +602,11 @@ async def receive_data(request: Request):
                         logger.error(f"[CData-ATTENDANCE] Error parsing realtime record '{line}': {e}")
                         logger.error(f"[CData-ATTENDANCE] Parts: {parts}")
         
-        if records_processed > 0 or users_processed > 0:
+        if records_processed > 0:
             conn.commit()
-            if records_processed > 0:
-                logger.info(f"[CData-ATTENDANCE] Successfully processed {records_processed} attendance records from device {sn}")
-            if users_processed > 0:
-                logger.info(f"[CData-USER] Successfully processed {users_processed} user records from device {sn}")
+            logger.info(f"[CData-ATTENDANCE] Successfully processed {records_processed} attendance records from device {sn}")
         else:
-            logger.warning(f"[CData] No valid attendance or user records found in data from device {sn}")
+            logger.warning(f"[CData-ATTENDANCE] No valid attendance records found in data from device {sn}")
         
         conn.close()
     
@@ -908,21 +751,10 @@ async def get_attendance_logs(limit: int = 100):
     conn = sqlite3.connect('adms.db')
     cursor = conn.cursor()
     
-    # Join with employees table to get names
     cursor.execute('''
-        SELECT 
-            a.device_sn, 
-            a.user_id, 
-            a.timestamp, 
-            a.verify_mode, 
-            a.status, 
-            a.created_at,
-            e.name,
-            e.department,
-            e.position
-        FROM attendance_logs a
-        LEFT JOIN employees e ON a.user_id = e.employee_id
-        ORDER BY a.created_at DESC
+        SELECT device_sn, user_id, timestamp, verify_mode, status, created_at
+        FROM attendance_logs
+        ORDER BY created_at DESC
         LIMIT ?
     ''', (limit,))
     
@@ -938,141 +770,10 @@ async def get_attendance_logs(limit: int = 100):
             "timestamp": log[2],
             "verify_mode": log[3],
             "status": log[4],
-            "created_at": log[5],
-            "employee_name": log[6] if log[6] else f"Unknown ({log[1]})",
-            "department": log[7],
-            "position": log[8]
+            "created_at": log[5]
         })
     
     return result
-
-@app.post("/api/devices/{sn}/sync-users")
-async def sync_users_from_device(sn: str):
-    """Queue command to sync user data from device"""
-    conn = sqlite3.connect('adms.db')
-    cursor = conn.cursor()
-    
-    # Check if device exists
-    cursor.execute('SELECT id FROM devices WHERE serial_number = ?', (sn,))
-    device = cursor.fetchone()
-    
-    if not device:
-        conn.close()
-        raise HTTPException(status_code=404, detail="Device not found")
-    
-    # Queue the DATA QUERY USERINFO command to get user list
-    cursor.execute('''
-        INSERT INTO device_commands (device_sn, command, status)
-        VALUES (?, ?, 'queued')
-    ''', (sn, 'DATA QUERY USERINFO'))
-    
-    command_id = cursor.lastrowid
-    conn.commit()
-    conn.close()
-    
-    logger.info(f"[API] Queued user sync command for device {sn}")
-    
-    return {
-        "message": f"User sync command queued for device {sn}",
-        "command_id": command_id,
-        "note": "Device will send user data on next connection"
-    }
-
-# Employee Management Endpoints
-@app.get("/api/employees")
-async def get_employees():
-    """Get all employees"""
-    conn = sqlite3.connect('adms.db')
-    cursor = conn.cursor()
-    
-    cursor.execute('''
-        SELECT employee_id, name, department, position, email, phone, created_at
-        FROM employees
-        ORDER BY name ASC
-    ''')
-    
-    employees = cursor.fetchall()
-    conn.close()
-    
-    result = []
-    for emp in employees:
-        result.append({
-            "employee_id": emp[0],
-            "name": emp[1],
-            "department": emp[2],
-            "position": emp[3],
-            "email": emp[4],
-            "phone": emp[5],
-            "created_at": emp[6]
-        })
-    
-    return result
-
-@app.post("/api/employees")
-async def add_employee(employee: Employee):
-    """Add a new employee"""
-    conn = sqlite3.connect('adms.db')
-    cursor = conn.cursor()
-    
-    try:
-        cursor.execute('''
-            INSERT INTO employees (employee_id, name, department, position, email, phone)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (employee.employee_id, employee.name, employee.department, 
-              employee.position, employee.email, employee.phone))
-        
-        conn.commit()
-        conn.close()
-        
-        return {"message": f"Employee {employee.name} added successfully", "employee_id": employee.employee_id}
-    except sqlite3.IntegrityError:
-        conn.close()
-        raise HTTPException(status_code=400, detail=f"Employee ID {employee.employee_id} already exists")
-
-@app.put("/api/employees/{employee_id}")
-async def update_employee(employee_id: str, employee: Employee):
-    """Update an existing employee"""
-    conn = sqlite3.connect('adms.db')
-    cursor = conn.cursor()
-    
-    # Check if employee exists
-    cursor.execute('SELECT id FROM employees WHERE employee_id = ?', (employee_id,))
-    existing = cursor.fetchone()
-    
-    if not existing:
-        conn.close()
-        raise HTTPException(status_code=404, detail="Employee not found")
-    
-    # Update employee
-    now_str = datetime.datetime.now().isoformat()
-    cursor.execute('''
-        UPDATE employees 
-        SET name = ?, department = ?, position = ?, email = ?, phone = ?, updated_at = ?
-        WHERE employee_id = ?
-    ''', (employee.name, employee.department, employee.position, 
-          employee.email, employee.phone, now_str, employee_id))
-    
-    conn.commit()
-    conn.close()
-    
-    return {"message": f"Employee {employee.name} updated successfully"}
-
-@app.delete("/api/employees/{employee_id}")
-async def delete_employee(employee_id: str):
-    """Delete an employee"""
-    conn = sqlite3.connect('adms.db')
-    cursor = conn.cursor()
-    
-    cursor.execute("DELETE FROM employees WHERE employee_id = ?", (employee_id,))
-    
-    if cursor.rowcount == 0:
-        conn.close()
-        raise HTTPException(status_code=404, detail="Employee not found")
-    
-    conn.commit()
-    conn.close()
-    
-    return {"message": f"Employee {employee_id} deleted successfully"}
 
 @app.get("/api/commands")
 async def get_commands(device_sn: Optional[str] = None):
