@@ -6,6 +6,7 @@ from typing import Optional, List
 import sqlite3
 import json
 import datetime
+from datetime import timezone, timedelta
 import logging
 import os
 import urllib.request
@@ -177,6 +178,21 @@ class CommandResponse(BaseModel):
     status: str
 
 # Helper functions
+def get_kabul_time():
+    """Get current time in Kabul timezone (UTC+4:30)"""
+    # Since server timezone is now set to Asia/Kabul, we can use local time
+    # This will automatically use the server's configured timezone
+    kabul_time = datetime.datetime.now()
+    return kabul_time
+
+def format_synctime_command(kabul_time):
+    """Format time sync command with Kabul time in ZKTeco format"""
+    # ZKTeco ADMS protocol - different devices support different formats
+    # Using "SET TIME" which is compatible with most ZKTeco devices
+    # Format: SET TIME <timestamp> where timestamp is YYYY-MM-DD HH:MM:SS
+    time_str = kabul_time.strftime("%Y-%m-%d %H:%M:%S")
+    return f"SET TIME {time_str}"
+
 def register_or_update_device(sn: str, ip: str, model: Optional[str] = None, firmware: Optional[str] = None):
     conn = sqlite3.connect('adms.db')
     cursor = conn.cursor()
@@ -812,7 +828,13 @@ async def queue_command(sn: str, command_req: CommandRequest):
         raise HTTPException(status_code=404, detail="Device not found")
     
     # Convert command to uppercase for proper ZKTeco format
-    formatted_command = command_req.command.upper()
+    formatted_command = command_req.command.upper().strip()
+    
+    # Special handling for SYNCTIME command - add Kabul time
+    if formatted_command == "SYNCTIME":
+        kabul_time = get_kabul_time()
+        formatted_command = format_synctime_command(kabul_time)
+        logger.info(f"[Command] SYNCTIME command formatted with Kabul time: {formatted_command}")
     
     # Insert command
     cursor.execute('''
