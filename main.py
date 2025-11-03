@@ -187,11 +187,13 @@ def get_kabul_time():
 
 def format_synctime_command(kabul_time):
     """Format time sync command with Kabul time in ZKTeco format"""
-    # ZKTeco ADMS protocol - different devices support different formats
-    # Using "SET TIME" which is compatible with most ZKTeco devices
-    # Format: SET TIME <timestamp> where timestamp is YYYY-MM-DD HH:MM:SS
+    # ZKTeco ADMS protocol uses specific command format
+    # The correct format for setting time is just the timestamp without command prefix
+    # Device will interpret this as time sync when sent properly
+    # Format: YYYY-MM-DD HH:MM:SS
     time_str = kabul_time.strftime("%Y-%m-%d %H:%M:%S")
-    return f"SET TIME {time_str}"
+    # Return the raw timestamp - the protocol handler will format it correctly
+    return time_str
 
 def register_or_update_device(sn: str, ip: str, model: Optional[str] = None, firmware: Optional[str] = None):
     conn = sqlite3.connect('adms.db')
@@ -336,7 +338,23 @@ async def get_request(request: Request):
         # Format commands with proper ZKTeco ADMS protocol format: C:{id}:{command}
         response_text = ""
         command_ids = []
+        has_synctime = False
+        synctime_value = None
+        
         for command_id, command in commands:
+            # Check if this is a time sync command (timestamp only, no prefix)
+            # Time sync commands are stored as just the timestamp: "2025-11-02 11:27:30"
+            if command.strip() and ' ' in command.strip() and ':' in command.strip():
+                # Check if it looks like a timestamp (YYYY-MM-DD HH:MM:SS format)
+                parts = command.strip().split()
+                if len(parts) == 2 and len(parts[0]) == 10 and '-' in parts[0]:
+                    # This is a time sync command
+                    has_synctime = True
+                    synctime_value = command.strip()
+                    command_ids.append(command_id)
+                    logger.info(f"[GetRequest] Detected time sync command: {synctime_value}")
+                    continue
+            
             # Convert to uppercase and format according to ZKTeco standards with proper line endings
             # Remove any existing C: prefix and whitespace
             clean_command = command.upper().strip()
@@ -347,6 +365,21 @@ async def get_request(request: Request):
             response_text += f"C:{command_id}:{clean_command}\r\n"
             command_ids.append(command_id)
         
+        # If there's a time sync command, send it in the proper ZKTeco format
+        # ZKTeco devices expect: SETTIME=<unix_timestamp> in the response
+        if has_synctime and synctime_value:
+            # Convert the datetime string to unix timestamp
+            try:
+                from datetime import datetime
+                dt = datetime.strptime(synctime_value, "%Y-%m-%d %H:%M:%S")
+                unix_timestamp = int(dt.timestamp())
+                # ZKTeco format: SETTIME=<unix_timestamp>
+                response_text += f"SETTIME={unix_timestamp}\r\n"
+                logger.info(f"[GetRequest] Sending SETTIME command with timestamp: {unix_timestamp} ({synctime_value})")
+            except Exception as e:
+                logger.error(f"[GetRequest] Error converting time sync timestamp: {e}")
+                response_text += f"GET TIME:{synctime_value}\r\n"
+        
         # Clear commands from queue
         clear_commands_from_queue(sn, command_ids)
         
@@ -355,19 +388,34 @@ async def get_request(request: Request):
         logger.info(f"[GetRequest] Command content: {response_text.strip()}")
         logger.info(f"[GetRequest] Command IDs: {command_ids}")
         
+        # Prepare response headers
+        response_headers = {
+            "Content-Type": "text/plain; charset=utf-8",
+            "Cache-Control": "no-store"
+        }
+        
+        # If time sync is requested, also add it to response header (some devices check this)
+        if has_synctime and synctime_value:
+            response_headers["DATE"] = synctime_value
+        
         # Return plain text with proper content-type header and charset
         return PlainTextResponse(
             response_text, 
-            headers={
-                "Content-Type": "text/plain; charset=utf-8",
-                "Cache-Control": "no-store"
-            }
+            headers=response_headers
         )
     else:
         logger.info(f"[GetRequest] No pending commands for device {sn} from {ip}")
-        # Enable realtime attendance reporting by sending REALTIME=1 option
+        
+        # Get current Kabul time for timestamp
+        kabul_time = get_kabul_time()
+        timestamp = int(kabul_time.timestamp())
+        
+        # Enable realtime attendance reporting and include server timestamp
+        # ZKTeco devices sync time using the Stamp parameter
+        response_text = f"GET OPTION FROM: Stamp={timestamp}\nRealtime=1\n"
+        
         return PlainTextResponse(
-            "GET OPTION FROM: REALTIME=1\n", 
+            response_text, 
             headers={
                 "Content-Type": "text/plain; charset=utf-8",
                 "Cache-Control": "no-store"
