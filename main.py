@@ -208,12 +208,20 @@ def register_or_update_device(sn: str, ip: str, model: Optional[str] = None, fir
     now_str = datetime.datetime.now().isoformat()
     
     if device:
-        # Update existing device
-        cursor.execute('''
-            UPDATE devices 
-            SET ip_address = ?, model = ?, firmware_version = ?, last_seen = ?, status = ?
-            WHERE serial_number = ?
-        ''', (ip, model, firmware, now_str, 'online', sn))
+        # Update existing device - preserve model and firmware if not provided
+        if model is not None and firmware is not None:
+            cursor.execute('''
+                UPDATE devices 
+                SET ip_address = ?, model = ?, firmware_version = ?, last_seen = ?, status = ?
+                WHERE serial_number = ?
+            ''', (ip, model, firmware, now_str, 'online', sn))
+        else:
+            # Just update IP, last_seen, and status - keep existing model/firmware
+            cursor.execute('''
+                UPDATE devices 
+                SET ip_address = ?, last_seen = ?, status = ?
+                WHERE serial_number = ?
+            ''', (ip, now_str, 'online', sn))
     else:
         # Register new device
         cursor.execute('''
@@ -363,7 +371,8 @@ async def get_request(request: Request):
             other_commands.append((command_id, command))
         
         # ZKTeco UFace 800 Plus time synchronization
-        # Try multiple methods to ensure compatibility
+        # The device only updates time from the Stamp parameter in response headers
+        # We don't need to send any special command, just include Stamp in headers
         if has_synctime and synctime_value and synctime_command_id is not None:
             # Convert the datetime string to unix timestamp
             try:
@@ -371,30 +380,23 @@ async def get_request(request: Request):
                 dt = datetime.strptime(synctime_value, "%Y-%m-%d %H:%M:%S")
                 unix_timestamp = int(dt.timestamp())
                 
-                # Method 1: Use DATA UPDATE command with TimeZone parameter
-                # This is the most reliable method for UFace series
-                # Format: C:{id}:DATA UPDATE TimeZone={offset}\tStamp={unix_timestamp}
+                # Just respond with OK and the Stamp header
+                # The device will read the timestamp from the Stamp header
+                response_text = f"OK\r\n"
                 
-                # Calculate timezone offset in seconds (Kabul is UTC+4:30 = 16200 seconds)
-                tz_offset = 16200
+                logger.info(f"[GetRequest] Time sync requested: {unix_timestamp} ({synctime_value}) - Command ID: {synctime_command_id}")
                 
-                response_text = f"C:{synctime_command_id}:DATA UPDATE TimeZone={tz_offset}\tStamp={unix_timestamp}\r\n"
-                
-                logger.info(f"[GetRequest] Sending DATA UPDATE command for time sync: {unix_timestamp} ({synctime_value}) - Command ID: {synctime_command_id}")
-                logger.info(f"[GetRequest] Timezone offset: {tz_offset} seconds (UTC+4:30)")
-                
-                # Clear only the time sync command
+                # Clear the time sync command
                 clear_commands_from_queue(sn, [synctime_command_id])
                 
                 # Enhanced logging for debugging
-                logger.info(f"[GetRequest] Sending time sync DATA UPDATE command to device {sn} from {ip}")
-                logger.info(f"[GetRequest] Command content: {response_text.strip()}")
-                logger.info(f"[GetRequest] Command ID: {synctime_command_id}")
-                logger.info(f"[GetRequest] Server timestamp: {unix_timestamp}")
+                logger.info(f"[GetRequest] Responding with Stamp header for device {sn} from {ip}")
+                logger.info(f"[GetRequest] Server timestamp in Stamp header: {unix_timestamp}")
                 if other_commands:
                     logger.info(f"[GetRequest] {len(other_commands)} other commands will be sent in next poll")
                 
                 # Prepare response headers with time information
+                # The device reads time from the Stamp header in the response
                 response_headers = {
                     "Content-Type": "text/plain; charset=utf-8",
                     "Cache-Control": "no-store",
@@ -590,54 +592,50 @@ async def device_cmd(request: Request):
     else:
         logger.warning(f"[DeviceCMD] No command or ID specified in device response from {sn}")
     
-    # CRITICAL FIX: For UFace 800 Plus time sync via CHECK command
-    # When device acknowledges CHECK command, we need to send back time info
-    # The device will read the Stamp from this response to actually update its time
-    
-    # Try to get the timestamp from the POST body if it's a CHECK command response
+    # CRITICAL: UFace 800 Plus reads time from Stamp header in responses
+    # Check if there's a pending time sync command for this device
     timestamp = None
     try:
-        body = await request.body()
-        if body:
-            body_str = body.decode('utf-8', errors='ignore')
-            # Check if this is a CHECK command acknowledgment
-            if 'CMD=CHECK' in body_str and 'ID=' in body_str:
-                # Extract the command ID
-                import re
-                id_match = re.search(r'ID=(\d+)', body_str)
-                if id_match:
-                    cmd_id = int(id_match.group(1))
-                    # Fetch the original command to get the timestamp
-                    conn = sqlite3.connect('adms.db')
-                    cursor = conn.cursor()
-                    cursor.execute('SELECT command FROM device_commands WHERE id = ? AND device_sn = ?', (cmd_id, sn))
-                    cmd_record = cursor.fetchone()
-                    conn.close()
-                    
-                    if cmd_record and cmd_record[0]:
-                        # Parse the datetime from the command
-                        try:
-                            from datetime import datetime
-                            dt = datetime.strptime(cmd_record[0].strip(), "%Y-%m-%d %H:%M:%S")
-                            timestamp = int(dt.timestamp())
-                            logger.info(f"[DeviceCMD] Using custom timestamp for CHECK command ID {cmd_id}: {timestamp} ({cmd_record[0].strip()})")
-                        except:
-                            pass
-    except:
-        pass
+        conn = sqlite3.connect('adms.db')
+        cursor = conn.cursor()
+        # Look for any recent SYNCTIME command (stored as datetime string) for this device
+        # Check both completed and pending commands in last 60 seconds
+        cursor.execute('''
+            SELECT command FROM device_commands 
+            WHERE device_sn = ? 
+            AND command LIKE '____-__-__ __:__:__'
+            AND created_at >= datetime('now', '-60 seconds')
+            ORDER BY created_at DESC
+            LIMIT 1
+        ''', (sn,))
+        cmd_record = cursor.fetchone()
+        conn.close()
+        
+        if cmd_record and cmd_record[0]:
+            # Parse the datetime from the command
+            try:
+                from datetime import datetime
+                dt = datetime.strptime(cmd_record[0].strip(), "%Y-%m-%d %H:%M:%S")
+                timestamp = int(dt.timestamp())
+                logger.info(f"[DeviceCMD] Using time sync timestamp: {timestamp} ({cmd_record[0].strip()})")
+            except Exception as e:
+                logger.warning(f"[DeviceCMD] Failed to parse time sync command: {e}")
+    except Exception as e:
+        logger.error(f"[DeviceCMD] Error checking for time sync command: {e}")
     
-    # Fallback to current Kabul time if no custom timestamp found
+    # Fallback to current Kabul time if no recent time sync command found
     if timestamp is None:
         kabul_time = get_kabul_time()
         timestamp = int(kabul_time.timestamp())
+        logger.debug(f"[DeviceCMD] Using current Kabul time: {timestamp}")
     
     response_headers = {
         "Content-Type": "text/plain; charset=utf-8",
         "Stamp": str(timestamp)
     }
     
-    # For time sync commands, also include it in the response body
-    response_text = f"OK\nStamp={timestamp}\n"
+    # Simple OK response - device reads time from Stamp header
+    response_text = f"OK\n"
     
     logger.info(f"[DeviceCMD] Sending response with Stamp={timestamp} to device {sn}")
     
@@ -1142,6 +1140,78 @@ async def clear_attendance_logs():
     conn.close()
     
     return {"message": f"Successfully cleared {count} attendance logs"}
+
+@app.get("/api/devices/{sn}/info")
+async def get_device_info(sn: str):
+    """Get detailed device information and request fresh data from device"""
+    conn = sqlite3.connect('adms.db')
+    cursor = conn.cursor()
+    
+    # Get device from database
+    cursor.execute('''
+        SELECT serial_number, ip_address, model, last_seen, firmware_version, status
+        FROM devices
+        WHERE serial_number = ?
+    ''', (sn,))
+    
+    device = cursor.fetchone()
+    
+    if not device:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Device not found")
+    
+    # Send INFO command to get fresh device information
+    # This will be picked up by the device on next poll
+    cursor.execute('''
+        INSERT INTO device_commands (device_sn, command, status, created_at)
+        VALUES (?, ?, ?, ?)
+    ''', (sn, 'INFO', 'queued', datetime.datetime.now().isoformat()))
+    
+    conn.commit()
+    
+    # Get device statistics
+    cursor.execute('SELECT COUNT(*) FROM attendance_logs WHERE device_sn = ?', (sn,))
+    attendance_count = cursor.fetchone()[0]
+    
+    cursor.execute('SELECT COUNT(*) FROM device_commands WHERE device_sn = ?', (sn,))
+    total_commands = cursor.fetchone()[0]
+    
+    cursor.execute('SELECT COUNT(*) FROM device_commands WHERE device_sn = ? AND status = "completed"', (sn,))
+    completed_commands = cursor.fetchone()[0]
+    
+    cursor.execute('SELECT COUNT(*) FROM device_commands WHERE device_sn = ? AND status = "queued"', (sn,))
+    queued_commands = cursor.fetchone()[0]
+    
+    # Get last attendance record
+    cursor.execute('''
+        SELECT timestamp, user_id 
+        FROM attendance_logs 
+        WHERE device_sn = ? 
+        ORDER BY timestamp DESC 
+        LIMIT 1
+    ''', (sn,))
+    last_attendance = cursor.fetchone()
+    
+    conn.close()
+    
+    return {
+        "serial_number": device[0],
+        "ip_address": device[1],
+        "model": device[2] or "Unknown",
+        "firmware_version": device[4] or "Unknown",
+        "last_seen": device[3],
+        "status": device[5],
+        "statistics": {
+            "total_attendance_records": attendance_count,
+            "total_commands": total_commands,
+            "completed_commands": completed_commands,
+            "queued_commands": queued_commands,
+            "last_attendance": {
+                "timestamp": last_attendance[0] if last_attendance else None,
+                "user_id": last_attendance[1] if last_attendance else None
+            } if last_attendance else None
+        }
+    }
 
 @app.get("/")
 async def root():

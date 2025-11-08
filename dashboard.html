@@ -547,6 +547,18 @@
                                 <i class="fas fa-clock mr-2"></i>
                                 Set Time on Device
                             </button>
+                            <div class="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                <p class="text-xs text-yellow-700">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    <strong>Note:</strong> If time doesn't update automatically, please:
+                                </p>
+                                <ul class="text-xs text-yellow-700 mt-1 ml-4 list-disc space-y-1">
+                                    <li>Access device web interface at device IP address</li>
+                                    <li>Enable "Time Sync" or "NTP" in device settings</li>
+                                    <li>Or set time manually through device menu</li>
+                                    <li>Device may need reboot after time change</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
@@ -585,6 +597,39 @@
                                 class="fas fa-power-off text-gray-600 text-xl mb-2 group-hover:scale-110 transition-transform"></i>
                             <span class="text-sm font-medium text-gray-700">Shutdown</span>
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Device Info Modal -->
+    <div id="deviceInfoModal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
+        <div class="relative w-full max-w-2xl mx-auto animate-slide-up">
+            <div class="bg-white rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
+                <div class="px-6 py-4 bg-gradient-to-r from-blue-500 to-blue-600">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-info-circle text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Device Information</h3>
+                                <p class="text-sm text-blue-100" id="infoModalDeviceSN">Loading...</p>
+                            </div>
+                        </div>
+                        <button id="closeInfoModal"
+                            class="w-8 h-8 rounded-lg hover:bg-white/20 flex items-center justify-center transition-colors">
+                            <i class="fas fa-times text-white"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-6" id="deviceInfoContent">
+                    <div class="flex items-center justify-center py-8">
+                        <i class="fas fa-spinner fa-spin text-blue-500 text-3xl"></i>
+                        <span class="ml-3 text-gray-600">Loading device information...</span>
                     </div>
                 </div>
             </div>
@@ -664,6 +709,11 @@
 
         closeModalBtn.addEventListener('click', () => {
             commandModal.classList.add('hidden');
+        });
+
+        // Close device info modal
+        document.getElementById('closeInfoModal').addEventListener('click', () => {
+            document.getElementById('deviceInfoModal').classList.add('hidden');
         });
 
         // Settings dropdown toggle
@@ -898,7 +948,12 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="flex items-center space-x-3">
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="viewDeviceInfo('${device.serial_number}')" 
+                                        class="inline-flex items-center px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-sm font-medium transition-colors duration-200 border border-blue-200">
+                                        <i class="fas fa-info-circle text-xs mr-1.5"></i>
+                                        Info
+                                    </button>
                                     <button onclick="openCommandModal('${device.serial_number}')" 
                                         class="inline-flex items-center px-3 py-1.5 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-lg text-sm font-medium transition-colors duration-200 border border-primary-200">
                                         <i class="fas fa-terminal text-xs mr-1.5"></i>
@@ -1288,6 +1343,156 @@
                     console.error('Error clearing attendance logs:', error);
                     showToast(`Failed to clear attendance logs: ${error.message}`, 'error');
                 }
+            }
+        }
+
+        async function viewDeviceInfo(deviceSN) {
+            const infoModal = document.getElementById('deviceInfoModal');
+            const infoContent = document.getElementById('deviceInfoContent');
+            const infoModalSN = document.getElementById('infoModalDeviceSN');
+            
+            // Show modal and set device SN
+            infoModalSN.textContent = `SN: ${deviceSN}`;
+            infoModal.classList.remove('hidden');
+            
+            // Show loading state
+            infoContent.innerHTML = `
+                <div class="flex items-center justify-center py-8">
+                    <i class="fas fa-spinner fa-spin text-blue-500 text-3xl"></i>
+                    <span class="ml-3 text-gray-600">Loading device information...</span>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch(`${API_BASE}/devices/${deviceSN}/info`);
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch device info: ${response.statusText}`);
+                }
+                
+                const info = await response.json();
+                
+                // Format last seen
+                const lastSeen = info.last_seen ? 
+                    new Date(info.last_seen).toLocaleString('en-US', {
+                        dateStyle: 'medium',
+                        timeStyle: 'medium'
+                    }) : 'Never';
+                
+                // Status styling
+                const isOnline = info.status === 'online';
+                const statusColor = isOnline ? 'green' : 'red';
+                const statusText = isOnline ? 'Online' : 'Offline';
+                
+                // Build the info display
+                infoContent.innerHTML = `
+                    <div class="space-y-6">
+                        <!-- Basic Information -->
+                        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-200">
+                            <h4 class="text-sm font-bold text-blue-900 mb-4 flex items-center">
+                                <i class="fas fa-microchip mr-2"></i>
+                                Device Details
+                            </h4>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-xs text-blue-600 mb-1">Serial Number</p>
+                                    <p class="text-sm font-semibold text-blue-900">${info.serial_number}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-blue-600 mb-1">IP Address</p>
+                                    <p class="text-sm font-semibold text-blue-900">${info.ip_address}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-blue-600 mb-1">Model</p>
+                                    <p class="text-sm font-semibold text-blue-900">${info.model}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-blue-600 mb-1">Firmware Version</p>
+                                    <p class="text-sm font-semibold text-blue-900">${info.firmware_version}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-blue-600 mb-1">Status</p>
+                                    <p class="text-sm font-semibold">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium border bg-${statusColor}-50 text-${statusColor}-700 border-${statusColor}-200">
+                                            <span class="w-2 h-2 bg-${statusColor}-500 rounded-full mr-2"></span>
+                                            ${statusText}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-blue-600 mb-1">Last Seen</p>
+                                    <p class="text-sm font-semibold text-blue-900">${lastSeen}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Statistics -->
+                        <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-5 border border-purple-200">
+                            <h4 class="text-sm font-bold text-purple-900 mb-4 flex items-center">
+                                <i class="fas fa-chart-bar mr-2"></i>
+                                Statistics
+                            </h4>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-white rounded-lg p-3 border border-purple-100">
+                                    <p class="text-xs text-purple-600 mb-1">Total Attendance</p>
+                                    <p class="text-2xl font-bold text-purple-900">${info.statistics.total_attendance_records.toLocaleString()}</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-3 border border-purple-100">
+                                    <p class="text-xs text-purple-600 mb-1">Total Commands</p>
+                                    <p class="text-2xl font-bold text-purple-900">${info.statistics.total_commands}</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-3 border border-purple-100">
+                                    <p class="text-xs text-purple-600 mb-1">Completed</p>
+                                    <p class="text-2xl font-bold text-green-600">${info.statistics.completed_commands}</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-3 border border-purple-100">
+                                    <p class="text-xs text-purple-600 mb-1">Queued</p>
+                                    <p class="text-2xl font-bold text-orange-600">${info.statistics.queued_commands}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${info.statistics.last_attendance ? `
+                        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-5 border border-green-200">
+                            <h4 class="text-sm font-bold text-green-900 mb-3 flex items-center">
+                                <i class="fas fa-clock mr-2"></i>
+                                Last Attendance Record
+                            </h4>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <p class="text-xs text-green-600 mb-1">User ID</p>
+                                    <p class="text-sm font-semibold text-green-900">${info.statistics.last_attendance.user_id}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-green-600 mb-1">Timestamp</p>
+                                    <p class="text-sm font-semibold text-green-900">${new Date(info.statistics.last_attendance.timestamp).toLocaleString()}</p>
+                                </div>
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                            <p class="text-xs text-yellow-800 flex items-start">
+                                <i class="fas fa-info-circle mr-2 mt-0.5"></i>
+                                <span>An INFO command has been sent to the device to refresh this data. The device will respond with updated information on its next poll.</span>
+                            </p>
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Error loading device info:', error);
+                infoContent.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-8 text-center">
+                        <i class="fas fa-exclamation-triangle text-red-500 text-4xl mb-3"></i>
+                        <h4 class="text-lg font-semibold text-red-700 mb-2">Failed to Load Device Info</h4>
+                        <p class="text-sm text-red-600">${error.message}</p>
+                        <button onclick="viewDeviceInfo('${deviceSN}')" 
+                            class="mt-4 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg text-sm font-medium transition-colors">
+                            <i class="fas fa-redo mr-2"></i>Try Again
+                        </button>
+                    </div>
+                `;
             }
         }
 
