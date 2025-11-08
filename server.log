@@ -353,3 +353,16 @@ WARNING:  Invalid HTTP request received.
 INFO:__main__:[Request] GET http://128.199.24.193:8080/ from 206.168.34.119
 INFO:__main__:[Response] GET / - Status: 200 - Time: 0.0009s
 INFO:     206.168.34.119:58226 - "GET / HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/api/devices from 104.28.204.91
+INFO:__main__:[Response] GET /api/devices - Status: 200 - Time: 0.0010s
+INFO:     104.28.204.91:17990 - "GET /api/devices HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/api/commands from 104.28.204.91
+INFO:__main__:[Response] GET /api/commands - Status: 200 - Time: 0.0009s
+INFO:     104.28.204.91:18380 - "GET /api/commands HTTP/1.1" 200 OK
+INFO:__main__:[Request] PRI http://128.199.24.193:8080* from 206.168.34.119
+INFO:__main__:[Response] PRI  - Status: 404 - Time: 0.0004s
+INFO:     206.168.34.119:55354 - "PRI %2A HTTP/2.0" 404 Not Found
+WARNING:  Invalid HTTP request received.
+INFO:__main__:[Request] GET http://128.199.24.193:8080/favicon.ico from 206.168.34.119
+INFO:__main__:[Response] GET /favicon.ico - Status: 404 - Time: 0.0005s
+INFO:     206.168.34.119:55364 - "GET /favicon.ico HTTP/1.1" 404 Not Found
