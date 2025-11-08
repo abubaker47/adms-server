@@ -1350,11 +1350,11 @@
             const infoModal = document.getElementById('deviceInfoModal');
             const infoContent = document.getElementById('deviceInfoContent');
             const infoModalSN = document.getElementById('infoModalDeviceSN');
-            
+
             // Show modal and set device SN
             infoModalSN.textContent = `SN: ${deviceSN}`;
             infoModal.classList.remove('hidden');
-            
+
             // Show loading state
             infoContent.innerHTML = `
                 <div class="flex items-center justify-center py-8">
@@ -1362,28 +1362,28 @@
                     <span class="ml-3 text-gray-600">Loading device information...</span>
                 </div>
             `;
-            
+
             try {
                 const response = await fetch(`${API_BASE}/devices/${deviceSN}/info`);
-                
+
                 if (!response.ok) {
                     throw new Error(`Failed to fetch device info: ${response.statusText}`);
                 }
-                
+
                 const info = await response.json();
-                
+
                 // Format last seen
-                const lastSeen = info.last_seen ? 
+                const lastSeen = info.last_seen ?
                     new Date(info.last_seen).toLocaleString('en-US', {
                         dateStyle: 'medium',
                         timeStyle: 'medium'
                     }) : 'Never';
-                
+
                 // Status styling
                 const isOnline = info.status === 'online';
                 const statusColor = isOnline ? 'green' : 'red';
                 const statusText = isOnline ? 'Online' : 'Offline';
-                
+
                 // Build the info display
                 infoContent.innerHTML = `
                     <div class="space-y-6">
@@ -1479,7 +1479,7 @@
                         </div>
                     </div>
                 `;
-                
+
             } catch (error) {
                 console.error('Error loading device info:', error);
                 infoContent.innerHTML = `
