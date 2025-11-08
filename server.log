@@ -346,3 +346,10 @@ INFO:__main__:[ZKTeco-GetRequest] Device connection from 180.222.139.202 - Query
 INFO:__main__:[GetRequest] No pending commands for device JYM6244400083 from 180.222.139.202
 INFO:__main__:[Response] GET /iclock/getrequest - Status: 200 - Time: 0.0049s
 INFO:     180.222.139.202:37403 - "GET /iclock/getrequest?SN=JYM6244400083 HTTP/1.1" 200 OK
+INFO:__main__:[Request] GET http://128.199.24.193:8080/ from 206.168.34.119
+INFO:__main__:[Response] GET / - Status: 200 - Time: 0.0007s
+INFO:     206.168.34.119:54536 - "GET / HTTP/1.1" 200 OK
+WARNING:  Invalid HTTP request received.
+INFO:__main__:[Request] GET http://128.199.24.193:8080/ from 206.168.34.119
+INFO:__main__:[Response] GET / - Status: 200 - Time: 0.0009s
+INFO:     206.168.34.119:58226 - "GET / HTTP/1.1" 200 OK
