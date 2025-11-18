@@ -1,6 +1,0 @@
-@echo off
-echo Installing required packages...
-pip install -r requirements.txt
-
-echo Starting ZKTeco ADMS Server...
-python start_server.py
