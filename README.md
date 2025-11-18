@@ -1,6 +1,6 @@
 # ZKTeco ADMS Server
 
-A fully functional Automatic Data Master Server (ADMS) for ZKTeco biometric devices, running on http://128.199.24.193:8080.
+A fully functional Automatic Data Master Server (ADMS) for ZKTeco biometric devices, running on http://SERVER_IP:8080.
 
 ## Overview
 
@@ -10,9 +10,11 @@ This project implements a complete ADMS solution for ZKTeco biometric devices wi
 
 ### 1. Core ADMS Server
 - **Framework**: FastAPI-based HTTP server
-- **Listening Address**: http://128.199.24.193:8080
+- **Listening Address**: http://SERVER_IP:8080
 - **Auto-registration**: Devices are automatically registered when they first connect
 - **Real-time monitoring**: Live device status tracking
+- **Timezone Support**: Configured for Kabul timezone (UTC+4:30) for accurate time synchronization
+- **Database Migration**: Automatic database schema migration on startup
 
 ### 2. Device Management
 - **Device Information Storage**:
@@ -41,6 +43,8 @@ This project implements a complete ADMS solution for ZKTeco biometric devices wi
 - **Real-time Processing**: Processes attendance records as they arrive
 - **Comprehensive Storage**: All attendance data with detailed fields
 - **Data Integrity**: Proper parsing and validation
+- **Duplicate Prevention**: Unique constraint on attendance logs (device_sn, user_id, timestamp)
+- **Optimized Queries**: Indexed for faster data retrieval
 
 ## Prerequisites
 
@@ -91,13 +95,15 @@ python main.py
 ## Accessing the Dashboard
 
 Once the server is running, access the web interface at:
-http://128.199.24.193:8080
+http://SERVER_IP:8080
 
 ### Using the Web Interface
-1. Navigate to http://128.199.24.193:8080
+1. Navigate to http://SERVER_IP:8080
 2. View connected devices in real-time
 3. Send commands using device action buttons
 4. Monitor attendance logs and command status
+5. View detailed device information and statistics
+6. Clear queued commands, attendance logs, or remove devices
 
 ## Supported Device Endpoints
 
@@ -112,22 +118,29 @@ The server listens for ZKTeco device requests on the following endpoints:
 
 ### Device Management
 - `GET /api/devices` - List all registered devices
+- `GET /api/devices/{sn}/info` - Get detailed device information with statistics
 - `POST /api/devices/{sn}/command` - Queue a command for a device
+- `DELETE /api/devices/{sn}` - Remove a device and all its related data
 
 ### Data Retrieval
 - `GET /api/attendance` - Get attendance logs
 - `GET /api/commands` - Get command history
 
+### Data Management
+- `DELETE /api/commands/queued` - Clear all queued commands
+- `DELETE /api/attendance` - Clear all attendance logs
+
 ## Device Commands
 
 The following commands can be sent to devices:
 
-- `DATA UPDATE` - Sync time
+- `SYNCTIME` - Sync time with Kabul timezone (UTC+4:30)
 - `RESTART` - Restart device
 - `LOCK` - Lock device
 - `UNLOCK` - Unlock device
 - `LOGDATA` - Retrieve attendance logs
 - `POWEROFF` - Shutdown device
+- `INFO` - Request device information update
 
 ## Database Structure
 
@@ -135,14 +148,17 @@ The application uses SQLite for data storage with the following tables:
 
 ### Tables:
 - **`devices`**: Registered device information
-  - Serial number, IP address, model, firmware version
+  - Serial number (unique), IP address, model, firmware version
   - Last activity time and status tracking
 - **`device_commands`**: Queued and executed commands
   - Command type, status, timestamps
   - Response tracking and error handling
+  - Foreign key reference to devices table
 - **`attendance_logs`**: Collected attendance records
   - Device serial number, user ID, timestamp
   - Verify mode and status information
+  - Unique constraint on (device_sn, user_id, timestamp) to prevent duplicates
+  - Indexed for optimized queries by device, user, and timestamp
 
 ## Technical Implementation
 
@@ -175,7 +191,7 @@ All core functionalities have been successfully tested:
 
 ## Connecting Devices
 
-1. Configure ZKTeco devices to use server IP: 128.199.24.193
+1. Configure ZKTeco devices to use server IP: SERVER_IP
 2. Set port to: 8080
 3. Enable ADMS protocol on the device
 4. Devices will auto-register upon first connection
@@ -194,10 +210,12 @@ All core functionalities have been successfully tested:
 If you encounter issues:
 
 1. Ensure port 8080 is not blocked by firewall
-2. Verify the device is configured with the correct server IP (128.199.24.193)
+2. Verify the device is configured with the correct server IP (SERVER_IP)
 3. Check that all dependencies are installed correctly
 4. Review the console logs for error messages
 5. Verify the virtual environment is activated when running the server
+6. Check database permissions if encountering data storage issues
+7. Verify server timezone is correctly set to Asia/Kabul for time synchronization
 
 ## License
 
