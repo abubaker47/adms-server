@@ -4,14 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
 import sqlite3
-import json
 import datetime
 from datetime import timezone, timedelta
 import logging
-import os
-import urllib.request
-import urllib.error
-import threading
 import time
 
 # Configure logging
@@ -20,7 +15,6 @@ logger = logging.getLogger(__name__)
 
 # Fix for Python 3.12+ datetime deprecation warning
 # Register a custom converter for datetime objects
-import sqlite3
 sqlite3.register_converter("TIMESTAMP", lambda x: datetime.datetime.fromisoformat(x.decode()))
 sqlite3.register_adapter(datetime.datetime, lambda x: x.isoformat())
 
@@ -309,6 +303,25 @@ def clear_commands_from_queue(sn: str, command_ids: List[int]):
     
     logger.info(f"Cleared {len(command_ids)} commands from queue for device {sn}")
 
+def format_commands_response(commands, sn: str):
+    """Format a list of commands in ZKTeco ADMS protocol format"""
+    response_text = ""
+    command_ids = []
+    
+    for command_id, command in commands:
+        # Convert to uppercase and format according to ZKTeco standards with proper line endings
+        # Remove any existing C: prefix and whitespace
+        clean_command = command.upper().strip()
+        if clean_command.startswith("C:"):
+            clean_command = clean_command[2:].strip()
+        
+        # Format as C:{id}:{command} per ZKTeco ADMS protocol
+        response_text += f"C:{command_id}:{clean_command}\r\n"
+        command_ids.append(command_id)
+    
+    return response_text, command_ids
+
+
 # Add middleware to log all requests
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
@@ -376,8 +389,7 @@ async def get_request(request: Request):
         if has_synctime and synctime_value and synctime_command_id is not None:
             # Convert the datetime string to unix timestamp
             try:
-                from datetime import datetime
-                dt = datetime.strptime(synctime_value, "%Y-%m-%d %H:%M:%S")
+                dt = datetime.datetime.strptime(synctime_value, "%Y-%m-%d %H:%M:%S")
                 unix_timestamp = int(dt.timestamp())
                 
                 # Just respond with OK and the Stamp header
@@ -415,16 +427,7 @@ async def get_request(request: Request):
         
         # Send other commands in standard C: format
         if other_commands or not has_synctime:
-            for command_id, command in other_commands:
-                # Convert to uppercase and format according to ZKTeco standards with proper line endings
-                # Remove any existing C: prefix and whitespace
-                clean_command = command.upper().strip()
-                if clean_command.startswith("C:"):
-                    clean_command = clean_command[2:].strip()
-                
-                # Format as C:{id}:{command} per ZKTeco ADMS protocol
-                response_text += f"C:{command_id}:{clean_command}\r\n"
-                command_ids.append(command_id)
+            response_text, command_ids = format_commands_response(other_commands, sn)
         
         # Clear commands from queue (only the ones we're sending)
         if command_ids:
@@ -614,8 +617,7 @@ async def device_cmd(request: Request):
         if cmd_record and cmd_record[0]:
             # Parse the datetime from the command
             try:
-                from datetime import datetime
-                dt = datetime.strptime(cmd_record[0].strip(), "%Y-%m-%d %H:%M:%S")
+                dt = datetime.datetime.strptime(cmd_record[0].strip(), "%Y-%m-%d %H:%M:%S")
                 timestamp = int(dt.timestamp())
                 logger.info(f"[DeviceCMD] Using time sync timestamp: {timestamp} ({cmd_record[0].strip()})")
             except Exception as e:
@@ -688,19 +690,8 @@ async def receive_data(request: Request):
         commands = get_pending_commands(sn)
         
         if commands:
-            # Format commands with proper ZKTeco ADMS protocol format: C:{id}:{command}
-            response_text = ""
-            command_ids = []
-            for command_id, command in commands:
-                # Convert to uppercase and format according to ZKTeco standards with proper line endings
-                # Remove any existing C: prefix and whitespace
-                clean_command = command.upper().strip()
-                if clean_command.startswith("C:"):
-                    clean_command = clean_command[2:].strip()
-                
-                # Format as C:{id}:{command} per ZKTeco ADMS protocol
-                response_text += f"C:{command_id}:{clean_command}\r\n"
-                command_ids.append(command_id)
+            # Format commands with proper ZKTeco ADMS protocol format
+            response_text, command_ids = format_commands_response(commands, sn)
             
             # Clear commands from queue
             clear_commands_from_queue(sn, command_ids)
@@ -740,19 +731,8 @@ async def receive_data(request: Request):
         commands = get_pending_commands(sn)
         
         if commands:
-            # Format commands with proper ZKTeco ADMS protocol format: C:{id}:{command}
-            response_text = ""
-            command_ids = []
-            for command_id, command in commands:
-                # Convert to uppercase and format according to ZKTeco standards with proper line endings
-                # Remove any existing C: prefix and whitespace
-                clean_command = command.upper().strip()
-                if clean_command.startswith("C:"):
-                    clean_command = clean_command[2:].strip()
-                
-                # Format as C:{id}:{command} per ZKTeco ADMS protocol
-                response_text += f"C:{command_id}:{clean_command}\r\n"
-                command_ids.append(command_id)
+            # Format commands with proper ZKTeco ADMS protocol format
+            response_text, command_ids = format_commands_response(commands, sn)
             
             # Clear commands from queue
             clear_commands_from_queue(sn, command_ids)
@@ -866,19 +846,8 @@ async def receive_data(request: Request):
     commands = get_pending_commands(sn)
     
     if commands:
-        # Format commands with proper ZKTeco ADMS protocol format: C:{id}:{command}
-        response_text = ""
-        command_ids = []
-        for command_id, command in commands:
-            # Convert to uppercase and format according to ZKTeco standards with proper line endings
-            # Remove any existing C: prefix and whitespace
-            clean_command = command.upper().strip()
-            if clean_command.startswith("C:"):
-                clean_command = clean_command[2:].strip()
-            
-            # Format as C:{id}:{command} per ZKTeco ADMS protocol
-            response_text += f"C:{command_id}:{clean_command}\r\n"
-            command_ids.append(command_id)
+        # Format commands with proper ZKTeco ADMS protocol format
+        response_text, command_ids = format_commands_response(commands, sn)
         
         # Clear commands from queue
         clear_commands_from_queue(sn, command_ids)

@@ -57,18 +57,33 @@ This project implements a complete ADMS solution for ZKTeco biometric devices wi
 
 ## Running the Server
 
-### Method 1: Using the batch file (Windows)
-Double-click on `run.bat` or run from command prompt:
+### Windows
+Double-click `start_adms.bat` or run from command prompt:
 ```
-run.bat
+start_adms.bat
 ```
 
-### Method 2: Manual start
+### Linux/macOS
+Use the provided shell scripts:
+```bash
+# Start the server
+./start.sh
+
+# Stop the server
+./stop.sh
+
+# Restart the server
+./restart.sh
+
+# Check server status
+./status.sh
+```
+
+### Manual Start (All platforms)
 ```
 python start_server.py
 ```
-
-### Method 3: Direct start
+or
 ```
 python main.py
 ```
