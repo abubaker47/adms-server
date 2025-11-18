@@ -29,6 +29,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Common response headers
+PLAIN_TEXT_HEADERS = {
+    "Content-Type": "text/plain; charset=utf-8",
+    "Cache-Control": "no-store"
+}
+
 # Database migration function
 def migrate_database():
     """Migrate existing database to add unique constraints and indexes"""
@@ -438,17 +444,8 @@ async def get_request(request: Request):
             logger.info(f"[GetRequest] Command content: {response_text.strip()}")
             logger.info(f"[GetRequest] Command IDs: {command_ids}")
             
-            # Prepare response headers
-            response_headers = {
-                "Content-Type": "text/plain; charset=utf-8",
-                "Cache-Control": "no-store"
-            }
-            
             # Return plain text with proper content-type header and charset
-            return PlainTextResponse(
-                response_text, 
-                headers=response_headers
-            )
+            return PlainTextResponse(response_text, headers=PLAIN_TEXT_HEADERS)
         else:
             # No commands to send (shouldn't happen but just in case)
             logger.info(f"[GetRequest] No valid commands to send for device {sn} from {ip}")
@@ -465,13 +462,7 @@ async def get_request(request: Request):
     # ZKTeco devices sync time using the Stamp parameter
     response_text = f"GET OPTION FROM: Stamp={timestamp}\nRealtime=1\n"
     
-    return PlainTextResponse(
-        response_text, 
-        headers={
-            "Content-Type": "text/plain; charset=utf-8",
-            "Cache-Control": "no-store"
-        }
-    )
+    return PlainTextResponse(response_text, headers=PLAIN_TEXT_HEADERS)
 
 @app.get("/iclock/devicecmd", response_class=PlainTextResponse)
 @app.post("/iclock/devicecmd", response_class=PlainTextResponse)
@@ -660,7 +651,7 @@ async def receive_fdata(request: Request):
     # Log the request
     logger.info(f"[ZKTeco-FData] Device {sn} sent fingerprint data from {ip}")
     
-    return PlainTextResponse("OK", headers={"Content-Type": "text/plain"})
+    return PlainTextResponse("OK", headers=PLAIN_TEXT_HEADERS)
 
 @app.post("/iclock/cdata", response_class=PlainTextResponse)
 @app.get("/iclock/cdata", response_class=PlainTextResponse)
@@ -702,22 +693,10 @@ async def receive_data(request: Request):
             logger.info(f"[CData-GET] Command IDs: {command_ids}")
             
             # Return plain text with proper content-type header and charset
-            return PlainTextResponse(
-                response_text, 
-                headers={
-                    "Content-Type": "text/plain; charset=utf-8",
-                    "Cache-Control": "no-store"
-                }
-            )
+            return PlainTextResponse(response_text, headers=PLAIN_TEXT_HEADERS)
         else:
             logger.info(f"[CData-GET] No pending commands for device {sn} from {ip}")
-            return PlainTextResponse(
-                "OK", 
-                headers={
-                    "Content-Type": "text/plain; charset=utf-8",
-                    "Cache-Control": "no-store"
-                }
-            )
+            return PlainTextResponse("OK", headers=PLAIN_TEXT_HEADERS)
     
     # Parse attendance data if present (for POST requests)
     body = await request.body()
@@ -743,22 +722,10 @@ async def receive_data(request: Request):
             logger.info(f"[CData-OPTION] Command IDs: {command_ids}")
             
             # Return plain text with proper content-type header and charset
-            return PlainTextResponse(
-                response_text, 
-                headers={
-                    "Content-Type": "text/plain; charset=utf-8",
-                    "Cache-Control": "no-store"
-                }
-            )
+            return PlainTextResponse(response_text, headers=PLAIN_TEXT_HEADERS)
         else:
             logger.info(f"[CData-OPTION] No pending commands for device {sn} from {ip}")
-            return PlainTextResponse(
-                "OK", 
-                headers={
-                    "Content-Type": "text/plain; charset=utf-8",
-                    "Cache-Control": "no-store"
-                }
-            )
+            return PlainTextResponse("OK", headers=PLAIN_TEXT_HEADERS)
     
     # Process attendance logs
     # Handle both batch mode (with "TRANS RECORDS" header) and realtime mode (individual records)
@@ -858,22 +825,10 @@ async def receive_data(request: Request):
         logger.info(f"[CData-POST] Command IDs: {command_ids}")
         
         # Return plain text with proper content-type header and charset
-        return PlainTextResponse(
-            response_text, 
-            headers={
-                "Content-Type": "text/plain; charset=utf-8",
-                "Cache-Control": "no-store"
-            }
-        )
+        return PlainTextResponse(response_text, headers=PLAIN_TEXT_HEADERS)
     else:
         logger.info(f"[CData-POST] No pending commands for device {sn} from {ip} after attendance processing")
-        return PlainTextResponse(
-            "OK", 
-            headers={
-                "Content-Type": "text/plain; charset=utf-8",
-                "Cache-Control": "no-store"
-            }
-        )
+        return PlainTextResponse("OK", headers=PLAIN_TEXT_HEADERS)
 
 # Catch-all endpoint for any other iclock requests
 @app.api_route("/iclock/{path:path}", methods=["GET", "POST"], response_class=PlainTextResponse)
@@ -892,7 +847,7 @@ async def catch_iclock_requests(request: Request, path: str):
         except Exception as e:
             logger.warning(f"[ZKTeco-CatchAll] Could not read POST body: {e}")
     
-    return PlainTextResponse("OK", headers={"Content-Type": "text/plain; charset=utf-8"})
+    return PlainTextResponse("OK", headers=PLAIN_TEXT_HEADERS)
 
 # API Endpoints for Web UI
 @app.get("/api/devices")
