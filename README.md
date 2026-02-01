@@ -48,7 +48,7 @@ This project implements a complete ADMS solution for ZKTeco biometric devices wi
 
 ## Prerequisites
 
-- Python 3.11+
+- Python 3.8+
 - Windows, macOS, or Linux operating system
 
 ## Installation
@@ -95,10 +95,11 @@ python main.py
 ## Accessing the Dashboard
 
 Once the server is running, access the web interface at:
-http://SERVER_IP:8080
+- Local access: http://localhost:8080 or http://127.0.0.1:8080
+- Network access: http://YOUR_SERVER_IP:8080 (replace YOUR_SERVER_IP with your actual server IP address)
 
 ### Using the Web Interface
-1. Navigate to http://SERVER_IP:8080
+1. Navigate to http://localhost:8080 (or http://YOUR_SERVER_IP:8080 for network access)
 2. View connected devices in real-time
 3. Send commands using device action buttons
 4. Monitor attendance logs and command status
@@ -163,13 +164,13 @@ The application uses SQLite for data storage with the following tables:
 ## Technical Implementation
 
 ### Backend
-- **Language**: Python 3.11+
+- **Language**: Python 3.8+
 - **Framework**: FastAPI
 - **Database**: SQLite
 - **Dependencies**: 
-  - fastapi>=0.100.0
-  - uvicorn>=0.38.0
-  - pydantic>=2.0.0
+  - fastapi==0.110.0
+  - uvicorn==0.27.1
+  - pydantic>=2.10,<3
 
 ### Frontend
 - **Technology**: HTML + TailwindCSS + JavaScript
@@ -191,7 +192,7 @@ All core functionalities have been successfully tested:
 
 ## Connecting Devices
 
-1. Configure ZKTeco devices to use server IP: SERVER_IP
+1. Configure ZKTeco devices to use server IP address (e.g., 192.168.1.100 or your server's IP)
 2. Set port to: 8080
 3. Enable ADMS protocol on the device
 4. Devices will auto-register upon first connection
@@ -210,12 +211,12 @@ All core functionalities have been successfully tested:
 If you encounter issues:
 
 1. Ensure port 8080 is not blocked by firewall
-2. Verify the device is configured with the correct server IP (SERVER_IP)
+2. Verify the device is configured with the correct server IP address
 3. Check that all dependencies are installed correctly
 4. Review the console logs for error messages
-5. Verify the virtual environment is activated when running the server
-6. Check database permissions if encountering data storage issues
-7. Verify server timezone is correctly set to Asia/Kabul for time synchronization
+5. Check database permissions if encountering data storage issues
+6. Verify server timezone is correctly set to Asia/Kabul for time synchronization
+7. Ensure Python 3.8 or higher is installed
 
 ## License
 
